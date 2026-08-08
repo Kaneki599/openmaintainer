@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="650" viewBox="0 0 1200 650" role="img" aria-labelledby="title description">
+  <title id="title">Example OpenMaintainer report</title>
+  <desc id="description">Terminal-style report with one error, two warnings, and remediation advice.</desc>
+  <defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#0b1220"/><stop offset="1" stop-color="#172554"/></linearGradient></defs>
+  <rect width="1200" height="650" rx="28" fill="url(#bg)"/>
+  <rect x="45" y="42" width="1110" height="566" rx="18" fill="#09111f" stroke="#334155" stroke-width="2"/>
+  <circle cx="82" cy="78" r="9" fill="#fb7185"/><circle cx="112" cy="78" r="9" fill="#fbbf24"/><circle cx="142" cy="78" r="9" fill="#4ade80"/>
+  <text x="180" y="85" fill="#94a3b8" font-family="monospace" font-size="21">openmaintainer scan .</text>
+  <line x1="45" y1="112" x2="1155" y2="112" stroke="#334155" stroke-width="2"/>
+  <text x="82" y="165" fill="#f8fafc" font-family="monospace" font-size="31" font-weight="700">OpenMaintainer report</text>
+  <text x="82" y="210" fill="#fca5a5" font-family="monospace" font-size="24" font-weight="700">1 error · 2 warnings · 0 info</text>
+  <text x="82" y="275" fill="#f87171" font-family="monospace" font-size="23" font-weight="700">ERROR — secrets-in-privileged-workflow</text>
+  <text x="82" y="310" fill="#cbd5e1" font-family="monospace" font-size="20">.github/workflows/release.yml:18 — Secret used in a privileged workflow.</text>
+  <text x="82" y="343" fill="#93c5fd" font-family="monospace" font-size="19">Fix: separate secret-bearing steps from untrusted code handling.</text>
+  <text x="82" y="415" fill="#fbbf24" font-family="monospace" font-size="23" font-weight="700">WARNING — action-unpinned</text>
+  <text x="82" y="448" fill="#cbd5e1" font-family="monospace" font-size="20">.github/workflows/ci.yml:12 — Action is pinned to a mutable tag.</text>
+  <text x="82" y="505" fill="#fbbf24" font-family="monospace" font-size="23" font-weight="700">WARNING — unsafe-workflow-run</text>
+  <text x="82" y="538" fill="#cbd5e1" font-family="monospace" font-size="20">.github/workflows/release.yml:4 — Elevated trigger requires a trust-boundary review.</text>
+</svg>

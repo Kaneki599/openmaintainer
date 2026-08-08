@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.2 — 2026-08-08
+
+- Add GitHub Marketplace branding and a stable major-version release channel.
+- Add a launch-oriented README, report preview, and Marketplace publication guide.
+
 ## 0.1.1 — 2026-08-08
 
 - Fix the GitHub Action manifest so GitHub can load the Action.
