@@ -7237,7 +7237,7 @@ var require_public_api = __commonJS({
         return docs;
       return Object.assign([], { empty: true }, composer$1.streamInfo());
     }
-    function parseDocument2(source, options = {}) {
+    function parseDocument3(source, options = {}) {
       const { lineCounter: lineCounter2, prettyErrors } = parseOptions(options);
       const parser$1 = new parser.Parser(lineCounter2?.addNewLine);
       const composer$1 = new composer.Composer(options);
@@ -7263,7 +7263,7 @@ var require_public_api = __commonJS({
       } else if (options === void 0 && reviver && typeof reviver === "object") {
         options = reviver;
       }
-      const doc = parseDocument2(src, options);
+      const doc = parseDocument3(src, options);
       if (!doc)
         return null;
       doc.warnings.forEach((warning) => log.warn(doc.options.logLevel, warning));
@@ -7299,7 +7299,7 @@ var require_public_api = __commonJS({
     }
     exports2.parse = parse;
     exports2.parseAllDocuments = parseAllDocuments;
-    exports2.parseDocument = parseDocument2;
+    exports2.parseDocument = parseDocument3;
     exports2.stringify = stringify;
   }
 });
@@ -7357,8 +7357,8 @@ var require_dist = __commonJS({
 });
 
 // src/action.ts
-var import_promises2 = require("node:fs/promises");
-var import_node_path2 = require("node:path");
+var import_promises3 = require("node:fs/promises");
+var import_node_path3 = require("node:path");
 
 // src/reporters.ts
 var severityOrder = { error: 0, warning: 1, info: 2 };
@@ -7395,11 +7395,35 @@ function formatMarkdown(report) {
 }
 
 // src/scanner.ts
+var import_promises2 = require("node:fs/promises");
+var import_node_path2 = require("node:path");
+
+// src/config.ts
 var import_promises = require("node:fs/promises");
 var import_node_path = require("node:path");
+var import_yaml = __toESM(require_dist(), 1);
+async function loadConfig(root) {
+  const filename = (0, import_node_path.join)(root, "openmaintainer.yml");
+  try {
+    const source = await (0, import_promises.readFile)(filename, "utf8");
+    const document = (0, import_yaml.parseDocument)(source);
+    if (document.errors.length > 0) throw new Error(`Invalid openmaintainer.yml: ${document.errors[0]?.message}`);
+    const config = document.toJS();
+    if (!config || config.ignore !== void 0 && (!Array.isArray(config.ignore) || !config.ignore.every((id) => typeof id === "string"))) {
+      throw new Error("openmaintainer.yml 'ignore' must be a list of rule identifiers.");
+    }
+    return { ignore: new Set(config.ignore ?? []) };
+  } catch (error) {
+    if (isMissingFile(error)) return { ignore: /* @__PURE__ */ new Set() };
+    throw error;
+  }
+}
+function isMissingFile(error) {
+  return typeof error === "object" && error !== null && error.code === "ENOENT";
+}
 
 // src/rules/workflow-security.ts
-var import_yaml = __toESM(require_dist(), 1);
+var import_yaml2 = __toESM(require_dist(), 1);
 var SHA_PIN = /^[a-f0-9]{40}$/i;
 function lineOf(source, match) {
   const index = source.search(match);
@@ -7410,7 +7434,7 @@ function finding(ruleId, severity, message, path, remediation, line) {
 }
 function checkWorkflowSecurity(path, source) {
   const findings = [];
-  const document = (0, import_yaml.parseDocument)(source);
+  const document = (0, import_yaml2.parseDocument)(source);
   if (document.errors.length > 0) {
     findings.push(
       finding(
@@ -7512,15 +7536,16 @@ function escapeRegExp(value) {
 // src/scanner.ts
 var WORKFLOW_DIRECTORY = ".github/workflows";
 async function scanRepository(root) {
-  const workflowRoot = (0, import_node_path.join)(root, WORKFLOW_DIRECTORY);
+  const workflowRoot = (0, import_node_path2.join)(root, WORKFLOW_DIRECTORY);
+  const config = await loadConfig(root);
   const findings = [];
   try {
-    const entries = await (0, import_promises.readdir)(workflowRoot, { withFileTypes: true });
+    const entries = await (0, import_promises2.readdir)(workflowRoot, { withFileTypes: true });
     for (const entry of entries) {
       if (!entry.isFile() || !/\.ya?ml$/i.test(entry.name)) continue;
-      const filename = (0, import_node_path.join)(workflowRoot, entry.name);
-      const source = await (0, import_promises.readFile)(filename, "utf8");
-      findings.push(...checkWorkflowSecurity((0, import_node_path.relative)(root, filename), source));
+      const filename = (0, import_node_path2.join)(workflowRoot, entry.name);
+      const source = await (0, import_promises2.readFile)(filename, "utf8");
+      findings.push(...checkWorkflowSecurity((0, import_node_path2.relative)(root, filename), source).filter((finding2) => !config.ignore.has(finding2.ruleId)));
     }
   } catch (error) {
     if (isMissingDirectory(error)) {
@@ -7540,18 +7565,18 @@ function input(name, fallback) {
 }
 async function setOutput(name, value) {
   const outputFile = process.env.GITHUB_OUTPUT;
-  if (outputFile) await (0, import_promises2.appendFile)(outputFile, `${name}=${value}
+  if (outputFile) await (0, import_promises3.appendFile)(outputFile, `${name}=${value}
 `, "utf8");
 }
 async function main() {
-  const root = (0, import_node_path2.resolve)(input("target", "."));
+  const root = (0, import_node_path3.resolve)(input("target", "."));
   const format = input("format", "markdown");
   const output = input("output", "openmaintainer-report.md");
   const failOnError = input("fail-on-error", "true") !== "false";
   const report = await scanRepository(root);
   const body = format === "json" ? `${JSON.stringify(report, null, 2)}
 ` : formatMarkdown(report);
-  await (0, import_promises2.writeFile)(output, body, "utf8");
+  await (0, import_promises3.writeFile)(output, body, "utf8");
   await setOutput("report-path", output);
   await setOutput("error-count", String(report.findings.filter((finding2) => finding2.severity === "error").length));
   process.stdout.write(`OpenMaintainer wrote ${output} with ${report.findings.length} finding(s).

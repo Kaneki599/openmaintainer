@@ -1,5 +1,6 @@
 import { readdir, readFile } from "node:fs/promises";
 import { join, relative } from "node:path";
+import { loadConfig } from "./config.js";
 import { checkWorkflowSecurity } from "./rules/workflow-security.js";
 import type { ScanReport } from "./types.js";
 
@@ -7,6 +8,7 @@ const WORKFLOW_DIRECTORY = ".github/workflows";
 
 export async function scanRepository(root: string): Promise<ScanReport> {
   const workflowRoot = join(root, WORKFLOW_DIRECTORY);
+  const config = await loadConfig(root);
   const findings = [];
 
   try {
@@ -15,7 +17,7 @@ export async function scanRepository(root: string): Promise<ScanReport> {
       if (!entry.isFile() || !/\.ya?ml$/i.test(entry.name)) continue;
       const filename = join(workflowRoot, entry.name);
       const source = await readFile(filename, "utf8");
-      findings.push(...checkWorkflowSecurity(relative(root, filename), source));
+      findings.push(...checkWorkflowSecurity(relative(root, filename), source).filter((finding) => !config.ignore.has(finding.ruleId)));
     }
   } catch (error: unknown) {
     if (isMissingDirectory(error)) {

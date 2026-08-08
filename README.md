@@ -36,6 +36,20 @@ npx openmaintainer scan . --format json --output openmaintainer-report.json
 An `error` finding returns exit code `1`; warnings and informational findings
 do not fail CI.
 
+### Configuration
+
+Create `openmaintainer.yml` in the repository root to suppress a justified
+rule. Suppressed rules should be reviewed periodically rather than used to
+silence findings globally.
+
+```yaml
+ignore:
+  - action-unpinned
+```
+
+See [`examples/`](examples/) for a deliberately insecure workflow and a
+configuration example.
+
 ## GitHub Action
 
 ```yaml
