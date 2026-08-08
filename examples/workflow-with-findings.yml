@@ -1,0 +1,13 @@
+name: Example workflow with findings
+
+on:
+  pull_request_target:
+
+permissions: write-all
+
+jobs:
+  example:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: echo "This fixture intentionally demonstrates findings."

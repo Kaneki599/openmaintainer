@@ -1,0 +1,3 @@
+# Suppress a rule only after documenting why it is safe for this repository.
+ignore:
+  - action-unpinned
