@@ -36,6 +36,18 @@ npx openmaintainer scan . --format json --output openmaintainer-report.json
 An `error` finding returns exit code `1`; warnings and informational findings
 do not fail CI.
 
+## GitHub Action
+
+```yaml
+- uses: Kaneki599/openmaintainer@v0.1.0
+  with:
+    format: markdown
+    output: openmaintainer-report.md
+```
+
+The action is read-only. It scans the checked-out repository and writes a
+report; it does not upload source code or alter workflow files.
+
 ## License
 
 [Apache-2.0](LICENSE)

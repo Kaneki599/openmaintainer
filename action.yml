@@ -1,0 +1,27 @@
+name: OpenMaintainer
+description: Explainable GitHub Actions security checks for the checked-out repository.
+inputs:
+  target:
+    description: Repository directory to scan.
+    required: false
+    default: .
+  format:
+    description: Report format: markdown or json.
+    required: false
+    default: markdown
+  output:
+    description: File to write the report to.
+    required: false
+    default: openmaintainer-report.md
+  fail-on-error:
+    description: Fail the action when an error-severity finding is detected.
+    required: false
+    default: "true"
+outputs:
+  report-path:
+    description: The generated report file.
+  error-count:
+    description: Number of error-severity findings.
+runs:
+  using: node20
+  main: dist/action.cjs
