@@ -26,6 +26,16 @@ npm run check
 npm test
 ```
 
+## Scan a repository
+
+```sh
+npx openmaintainer scan .
+npx openmaintainer scan . --format json --output openmaintainer-report.json
+```
+
+An `error` finding returns exit code `1`; warnings and informational findings
+do not fail CI.
+
 ## License
 
 [Apache-2.0](LICENSE)
