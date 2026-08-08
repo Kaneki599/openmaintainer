@@ -17,5 +17,9 @@ jobs:
       - run: npm ci
       - run: npm run check
       - run: npm test
+      - uses: ./
+        with:
+          output: self-openmaintainer-report.md
+      - run: test -s self-openmaintainer-report.md
       - run: npm run bundle:action
       - run: git diff --exit-code -- dist/action.cjs
