@@ -40,3 +40,25 @@ jobs:
 
   assert.equal(findings.length, 0);
 });
+
+test("flags privileged workflow_run secrets separately from the trigger warning", () => {
+  const findings = checkWorkflowSecurity(
+    ".github/workflows/release.yml",
+    `name: Release
+on:
+  workflow_run:
+permissions:
+  contents: read
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - run: deploy --token "\${{ secrets.DEPLOY_TOKEN }}"
+`,
+  );
+
+  assert.deepEqual(
+    findings.map((finding) => finding.ruleId).sort(),
+    ["secrets-in-privileged-workflow", "unsafe-workflow-run"],
+  );
+});

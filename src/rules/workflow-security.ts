@@ -76,6 +76,32 @@ export function checkWorkflowSecurity(path: string, source: string): Finding[] {
     );
   }
 
+  if (/^\s*workflow_run\s*:/m.test(source)) {
+    findings.push(
+      finding(
+        "unsafe-workflow-run",
+        "warning",
+        "'workflow_run' can execute with elevated repository permissions after another workflow completes.",
+        path,
+        "Do not use untrusted workflow artifacts or pull-request code in this workflow; restrict permissions to the minimum.",
+        lineOf(source, /^\s*workflow_run\s*:/m),
+      ),
+    );
+  }
+
+  if (/^\s*(?:pull_request_target|workflow_run)\s*:/m.test(source) && /secrets\.[A-Za-z0-9_]+/.test(source)) {
+    findings.push(
+      finding(
+        "secrets-in-privileged-workflow",
+        "error",
+        "A privileged trigger and repository secret are used in the same workflow.",
+        path,
+        "Separate secret-bearing steps from untrusted pull-request or workflow artifact handling, and review the trust boundary.",
+        lineOf(source, /secrets\.[A-Za-z0-9_]+/),
+      ),
+    );
+  }
+
   if (/^\s*permissions:\s*write-all\s*$/m.test(source)) {
     findings.push(
       finding(
