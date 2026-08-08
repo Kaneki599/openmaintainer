@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.1 — 2026-08-08
+
+- Fix the GitHub Action manifest so GitHub can load the Action.
+- Add a test that validates the Action manifest YAML.
+
 ## 0.1.0 — 2026-08-08
 
 First public release.
