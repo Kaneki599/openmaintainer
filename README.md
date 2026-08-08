@@ -48,6 +48,11 @@ do not fail CI.
 The action is read-only. It scans the checked-out repository and writes a
 report; it does not upload source code or alter workflow files.
 
+## Contributing and security
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for development and rule standards, and
+[SECURITY.md](SECURITY.md) for responsible vulnerability reporting.
+
 ## License
 
 [Apache-2.0](LICENSE)
