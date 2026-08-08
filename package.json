@@ -16,11 +16,20 @@
   "engines": {
     "node": ">=20"
   },
-  "keywords": ["github", "security", "maintainers", "github-actions", "open-source"],
+  "keywords": [
+    "github",
+    "security",
+    "maintainers",
+    "github-actions",
+    "open-source"
+  ],
   "license": "Apache-2.0",
   "devDependencies": {
     "@types/node": "^22.0.0",
     "tsx": "^4.19.0",
     "typescript": "^5.7.0"
+  },
+  "dependencies": {
+    "yaml": "^2.9.0"
   }
 }
