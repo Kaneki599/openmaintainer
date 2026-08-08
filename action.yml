@@ -6,7 +6,7 @@ inputs:
     required: false
     default: .
   format:
-    description: Report format: markdown or json.
+    description: "Report format: markdown or json."
     required: false
     default: markdown
   output:

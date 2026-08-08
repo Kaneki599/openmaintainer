@@ -55,7 +55,7 @@ configuration example.
 ## GitHub Action
 
 ```yaml
-- uses: Kaneki599/openmaintainer@v0.1.0
+- uses: Kaneki599/openmaintainer@v0.1.1
   with:
     format: markdown
     output: openmaintainer-report.md
