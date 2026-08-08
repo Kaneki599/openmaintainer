@@ -23,5 +23,5 @@ outputs:
   error-count:
     description: Number of error-severity findings.
 runs:
-  using: node20
+  using: node24
   main: dist/action.cjs

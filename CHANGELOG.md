@@ -4,6 +4,7 @@
 
 - Fix the GitHub Action manifest so GitHub can load the Action.
 - Add a test that validates the Action manifest YAML.
+- Use the supported Node.js 24 GitHub Actions runtime.
 
 ## 0.1.0 — 2026-08-08
 
