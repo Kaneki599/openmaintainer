@@ -8,5 +8,5 @@ test("action manifest is valid YAML and points to the bundled entry point", asyn
   const document = parseDocument(source);
   assert.equal(document.errors.length, 0);
   const manifest = document.toJS() as { runs: { using: string; main: string } };
-  assert.deepEqual(manifest.runs, { using: "node20", main: "dist/action.cjs" });
+  assert.deepEqual(manifest.runs, { using: "node24", main: "dist/action.cjs" });
 });
