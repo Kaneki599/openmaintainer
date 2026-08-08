@@ -1,5 +1,7 @@
 # OpenMaintainer
 
+[![Verify](https://github.com/Kaneki599/openmaintainer/actions/workflows/verify.yml/badge.svg)](https://github.com/Kaneki599/openmaintainer/actions/workflows/verify.yml)
+
 OpenMaintainer is an explainable, local-first health check for GitHub repositories.
 It helps maintainers find workflow-security gaps and missing project governance
 without sending repository contents to a third party.
@@ -66,6 +68,16 @@ report; it does not upload source code or alter workflow files.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for development and rule standards, and
 [SECURITY.md](SECURITY.md) for responsible vulnerability reporting.
+
+## Roadmap
+
+- [ ] SARIF export for GitHub Code Scanning.
+- [ ] Baseline mode to surface only new findings.
+- [ ] Optional project-health checks for release and contributor documentation.
+- [ ] Additional workflow rules proposed and reviewed by the community.
+
+See [CHANGELOG.md](CHANGELOG.md) for release notes and
+[CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) for community expectations.
 
 ## License
 

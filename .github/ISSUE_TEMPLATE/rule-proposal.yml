@@ -1,0 +1,23 @@
+name: Rule proposal
+description: Propose a focused, explainable repository-health rule.
+labels: [rule]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem and security or maintenance impact
+    validations:
+      required: true
+  - type: textarea
+    id: examples
+    attributes:
+      label: Unsafe and safe examples
+      description: Remove secrets and private repository details.
+    validations:
+      required: true
+  - type: textarea
+    id: false-positives
+    attributes:
+      label: Expected false positives and remediation
+    validations:
+      required: true

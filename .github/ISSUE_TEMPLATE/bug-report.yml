@@ -1,0 +1,23 @@
+name: Bug report
+description: Report an incorrect finding, missed finding, or scanner failure.
+labels: [bug]
+body:
+  - type: textarea
+    id: workflow
+    attributes:
+      label: Minimal workflow or reproduction
+      description: Remove secrets and provide the smallest safe example.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: OpenMaintainer version or commit
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected and actual result
+    validations:
+      required: true
