@@ -178,8 +178,8 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for development and rule standards, and
 
 ## What is included
 
-- 16 structural workflow-security rules with YAML source locations.
-- 12 repository, maintenance, release, and supply-chain checks.
+- 19 structural workflow-security rules with YAML source locations.
+- 13 repository, maintenance, release, and supply-chain checks.
 - Deterministic fingerprints, expiring suppressions, and baseline comparison.
 - Native GitHub annotations, job summaries, and optional idempotent PR comments.
 - A TypeScript API for custom integrations and report processing.

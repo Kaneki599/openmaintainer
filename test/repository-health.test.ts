@@ -13,6 +13,7 @@ test("reports repository adoption and package metadata gaps", async () => {
   assert.equal(ids.has("repository-readme-missing"), true);
   assert.equal(ids.has("package-metadata-incomplete"), true);
   assert.equal(ids.has("package-lock-missing"), true);
+  assert.equal(ids.has("package-engines-missing"), true);
 });
 
 test("security preset excludes repository maintenance checks", async () => {

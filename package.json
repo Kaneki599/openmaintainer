@@ -1,6 +1,6 @@
 {
   "name": "openmaintainer",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "private": false,
   "description": "Explainable maintainer health checks for GitHub repositories.",
   "type": "module",

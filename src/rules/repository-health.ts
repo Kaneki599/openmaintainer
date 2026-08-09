@@ -18,6 +18,7 @@ export const repositoryRules: Rule[] = [
   fileRule("support-policy-missing", "Support policy is missing", "A support policy sets expectations about questions and maintenance.", "SUPPORT.md", "info", "maintenance", "Add SUPPORT.md describing supported channels and response expectations."),
   packageMetadataRule(),
   packageLockRule(),
+  packageEnginesRule(),
 ];
 
 function fileRule(id: string, title: string, description: string, path: string, severity: Severity, category: FindingCategory, remediation: string): Rule {
@@ -58,6 +59,20 @@ function packageLockRule(): Rule {
       if (!await exists(join(root, "package.json"))) return [];
       for (const path of ["package-lock.json", "npm-shrinkwrap.json", "pnpm-lock.yaml", "yarn.lock", "bun.lock", "bun.lockb"]) if (await exists(join(root, path))) return [];
       return [finding(metadata, "package.json", "lockfile:missing", metadata.description, "Commit the lockfile produced by the package manager used in CI.")];
+    },
+  };
+}
+
+function packageEnginesRule(): Rule {
+  const metadata = meta("package-engines-missing", "Supported Node.js version is not declared", "Consumers and CI need an explicit Node.js compatibility range.", "info", "release");
+  return {
+    meta: metadata,
+    async run({ root }) {
+      const path = "package.json";
+      try {
+        const data = JSON.parse(await readFile(join(root, path), "utf8")) as { engines?: { node?: unknown } };
+        return typeof data.engines?.node === "string" && data.engines.node.trim() ? [] : [finding(metadata, path, "engines.node:missing", metadata.description, "Add an engines.node range that matches the versions exercised in CI.")];
+      } catch (error: unknown) { return isMissing(error) ? [] : []; }
     },
   };
 }

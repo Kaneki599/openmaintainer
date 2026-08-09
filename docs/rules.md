@@ -84,6 +84,20 @@ Reports privileged cache keys containing pull-request-controlled data.
 Reports artifact downloads across a `workflow_run` boundary. Bind artifacts to
 the expected workflow and commit, then validate their contents.
 
+### shell-download-execution
+
+Reports network responses piped directly to a shell. Download, authenticate,
+and inspect the content before executing a local copy.
+
+### world-writable-files
+
+Reports `chmod 777` and equivalent world-writable permissions in workflow commands.
+
+### github-script-injection
+
+Reports untrusted expressions embedded directly in `actions/github-script`
+source. Pass the value through an environment variable instead.
+
 ## Repository health
 
 ### repository-readme-missing
@@ -134,6 +148,11 @@ Add package description, license, repository, and issue tracker metadata.
 ### package-lock-missing
 
 Commit the lockfile produced by the package manager used in CI.
+
+### package-engines-missing
+
+Declare the supported Node.js range through `engines.node` and exercise that
+range in CI.
 
 ## Configuration example
 

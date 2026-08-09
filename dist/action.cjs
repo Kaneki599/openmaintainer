@@ -7738,7 +7738,10 @@ var workflowRules = [
   rule(meta("untrusted-checkout-ref", "Privileged workflow checks out an untrusted ref", "A privileged workflow must not execute code selected by pull-request input.", "error", "high"), untrustedCheckoutRef),
   rule(meta("issue-comment-command", "Issue comment controls a privileged command", "Comment-driven automation needs authorization before executing commands.", "warning", "medium"), issueCommentCommand),
   rule(meta("cache-key-untrusted", "Privileged cache key uses pull-request data", "Untrusted cache keys can allow cache poisoning across trust boundaries.", "warning", "medium"), untrustedCacheKey),
-  rule(meta("workflow-artifact-trust", "Privileged workflow consumes prior artifacts", "Downloaded artifacts must be bound to a trusted producer and validated before use.", "warning", "medium"), workflowArtifactTrust)
+  rule(meta("workflow-artifact-trust", "Privileged workflow consumes prior artifacts", "Downloaded artifacts must be bound to a trusted producer and validated before use.", "warning", "medium"), workflowArtifactTrust),
+  rule(meta("shell-download-execution", "Downloaded content is piped to a shell", "Executing network content without prior verification creates a direct code-execution path.", "warning", "high", ["supply-chain"]), shellDownloadExecution),
+  rule(meta("world-writable-files", "Workflow creates world-writable files", "World-writable permissions allow unrelated processes to replace or modify files.", "warning", "high"), worldWritableFiles),
+  rule(meta("github-script-injection", "Untrusted expression interpolated into github-script", "Expressions inside github-script source can alter JavaScript syntax before execution.", "error", "high", ["injection"]), githubScriptInjection)
 ];
 function rule(metaValue, run) {
   return {
@@ -7820,6 +7823,20 @@ function workflowArtifactTrust(document, metaValue) {
   if (!hasTrigger(document, "workflow_run")) return [];
   return document.findByKey("uses").filter((entry) => typeof entry.value === "string" && entry.value.startsWith("actions/download-artifact@")).map((entry) => makeFinding(metaValue, document, entry, "A workflow_run workflow downloads an artifact from an earlier run.", "Bind the artifact to an expected workflow and commit, then validate contents before execution.", entry.pointer));
 }
+function shellDownloadExecution(document, metaValue) {
+  const pattern = /(?:curl|wget)\b[^\n|]*(?:\||\|&)\s*(?:sudo\s+)?(?:ba|z|k)?sh\b/i;
+  return document.findByKey("run").filter((entry) => typeof entry.value === "string" && pattern.test(entry.value)).map((entry) => makeFinding(metaValue, document, entry, "A network response is executed directly by a shell.", "Download the file, verify its checksum or signature, then execute the verified local copy.", String(entry.value)));
+}
+function worldWritableFiles(document, metaValue) {
+  return document.findByKey("run").filter((entry) => typeof entry.value === "string" && /\bchmod\s+(?:-[A-Za-z]+\s+)*(?:0?777|a\+rwx)\b/.test(entry.value)).map((entry) => makeFinding(metaValue, document, entry, "A workflow command grants write access to every user.", "Grant only the owner or group permissions required by the following step.", String(entry.value)));
+}
+function githubScriptInjection(document, metaValue) {
+  const untrusted = /\$\{\{\s*(?:github\.event\.(?:issue|pull_request|comment|review|head_commit)|github\.head_ref|inputs\.)/;
+  return document.findByKey("uses").filter((entry) => typeof entry.value === "string" && entry.value.startsWith("actions/github-script@")).flatMap((entry) => {
+    const script = document.findByPointer(`${entry.pointer.replace(/\/uses$/, "")}/with/script`);
+    return typeof script?.value === "string" && untrusted.test(script.value) ? [makeFinding(metaValue, document, script, "A potentially untrusted expression is interpolated into github-script source.", "Assign the expression to an environment variable and read it through process.env inside the script.", script.value)] : [];
+  });
+}
 function makeFinding(metaValue, document, entry, message, remediation, evidence, location = entry?.location) {
   const path = location?.path ?? document.path;
   const fingerprint = (0, import_node_crypto.createHash)("sha256").update([metaValue.id, path, evidence].join("\0")).digest("hex");
@@ -7859,7 +7876,8 @@ var repositoryRules = [
   fileRule("changelog-missing", "Changelog is missing", "Users need a concise record of notable changes and upgrade considerations.", "CHANGELOG.md", "info", "release", "Add a changelog and update it for user-visible releases."),
   fileRule("support-policy-missing", "Support policy is missing", "A support policy sets expectations about questions and maintenance.", "SUPPORT.md", "info", "maintenance", "Add SUPPORT.md describing supported channels and response expectations."),
   packageMetadataRule(),
-  packageLockRule()
+  packageLockRule(),
+  packageEnginesRule()
 ];
 function fileRule(id, title, description, path, severity, category, remediation) {
   return anyFileRule(id, title, description, [path], severity, category, remediation);
@@ -7899,6 +7917,21 @@ function packageLockRule() {
       if (!await exists((0, import_node_path3.join)(root, "package.json"))) return [];
       for (const path of ["package-lock.json", "npm-shrinkwrap.json", "pnpm-lock.yaml", "yarn.lock", "bun.lock", "bun.lockb"]) if (await exists((0, import_node_path3.join)(root, path))) return [];
       return [finding(metadata, "package.json", "lockfile:missing", metadata.description, "Commit the lockfile produced by the package manager used in CI.")];
+    }
+  };
+}
+function packageEnginesRule() {
+  const metadata = meta2("package-engines-missing", "Supported Node.js version is not declared", "Consumers and CI need an explicit Node.js compatibility range.", "info", "release");
+  return {
+    meta: metadata,
+    async run({ root }) {
+      const path = "package.json";
+      try {
+        const data = JSON.parse(await (0, import_promises3.readFile)((0, import_node_path3.join)(root, path), "utf8"));
+        return typeof data.engines?.node === "string" && data.engines.node.trim() ? [] : [finding(metadata, path, "engines.node:missing", metadata.description, "Add an engines.node range that matches the versions exercised in CI.")];
+      } catch (error) {
+        return isMissing(error) ? [] : [];
+      }
     }
   };
 }
@@ -7954,7 +7987,7 @@ async function runRules(context, rules = builtInRules) {
 }
 
 // src/version.ts
-var OPENMAINTAINER_VERSION = "0.2.0";
+var OPENMAINTAINER_VERSION = "0.2.1";
 
 // src/scanner.ts
 var import_node_child_process = require("node:child_process");

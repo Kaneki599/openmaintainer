@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.1 — 2026-08-09
+
+- Detect direct download-to-shell execution and world-writable file permissions.
+- Detect untrusted expression interpolation in `actions/github-script`.
+- Report JavaScript packages that do not declare their supported Node.js range.
+- Keep automated compiler and runtime type updates within supported major versions.
+- Harden release packaging and make reruns idempotent.
+
 ## 0.2.0 — 2026-08-09
 
 - Replace text matching with structural YAML workflow analysis and exact source locations.

@@ -23,6 +23,9 @@ export const workflowRules: Rule[] = [
   rule(meta("issue-comment-command", "Issue comment controls a privileged command", "Comment-driven automation needs authorization before executing commands.", "warning", "medium"), issueCommentCommand),
   rule(meta("cache-key-untrusted", "Privileged cache key uses pull-request data", "Untrusted cache keys can allow cache poisoning across trust boundaries.", "warning", "medium"), untrustedCacheKey),
   rule(meta("workflow-artifact-trust", "Privileged workflow consumes prior artifacts", "Downloaded artifacts must be bound to a trusted producer and validated before use.", "warning", "medium"), workflowArtifactTrust),
+  rule(meta("shell-download-execution", "Downloaded content is piped to a shell", "Executing network content without prior verification creates a direct code-execution path.", "warning", "high", ["supply-chain"]), shellDownloadExecution),
+  rule(meta("world-writable-files", "Workflow creates world-writable files", "World-writable permissions allow unrelated processes to replace or modify files.", "warning", "high"), worldWritableFiles),
+  rule(meta("github-script-injection", "Untrusted expression interpolated into github-script", "Expressions inside github-script source can alter JavaScript syntax before execution.", "error", "high", ["injection"]), githubScriptInjection),
 ];
 
 export function checkWorkflowSecurity(path: string, source: string): Finding[] {
@@ -127,6 +130,23 @@ function untrustedCacheKey(document: WorkflowDocument, metaValue: RuleMetadata):
 function workflowArtifactTrust(document: WorkflowDocument, metaValue: RuleMetadata): Finding[] {
   if (!hasTrigger(document, "workflow_run")) return [];
   return document.findByKey("uses").filter((entry) => typeof entry.value === "string" && entry.value.startsWith("actions/download-artifact@")).map((entry) => makeFinding(metaValue, document, entry, "A workflow_run workflow downloads an artifact from an earlier run.", "Bind the artifact to an expected workflow and commit, then validate contents before execution.", entry.pointer));
+}
+
+function shellDownloadExecution(document: WorkflowDocument, metaValue: RuleMetadata): Finding[] {
+  const pattern = /(?:curl|wget)\b[^\n|]*(?:\||\|&)\s*(?:sudo\s+)?(?:ba|z|k)?sh\b/i;
+  return document.findByKey("run").filter((entry) => typeof entry.value === "string" && pattern.test(entry.value)).map((entry) => makeFinding(metaValue, document, entry, "A network response is executed directly by a shell.", "Download the file, verify its checksum or signature, then execute the verified local copy.", String(entry.value)));
+}
+
+function worldWritableFiles(document: WorkflowDocument, metaValue: RuleMetadata): Finding[] {
+  return document.findByKey("run").filter((entry) => typeof entry.value === "string" && /\bchmod\s+(?:-[A-Za-z]+\s+)*(?:0?777|a\+rwx)\b/.test(entry.value)).map((entry) => makeFinding(metaValue, document, entry, "A workflow command grants write access to every user.", "Grant only the owner or group permissions required by the following step.", String(entry.value)));
+}
+
+function githubScriptInjection(document: WorkflowDocument, metaValue: RuleMetadata): Finding[] {
+  const untrusted = /\$\{\{\s*(?:github\.event\.(?:issue|pull_request|comment|review|head_commit)|github\.head_ref|inputs\.)/;
+  return document.findByKey("uses").filter((entry) => typeof entry.value === "string" && entry.value.startsWith("actions/github-script@")).flatMap((entry) => {
+    const script = document.findByPointer(`${entry.pointer.replace(/\/uses$/, "")}/with/script`);
+    return typeof script?.value === "string" && untrusted.test(script.value) ? [makeFinding(metaValue, document, script, "A potentially untrusted expression is interpolated into github-script source.", "Assign the expression to an environment variable and read it through process.env inside the script.", script.value)] : [];
+  });
 }
 
 function makeFinding(metaValue: RuleMetadata, document: WorkflowDocument, entry: IndexedYamlNode | undefined, message: string, remediation: string, evidence: string, location = entry?.location): Finding {
