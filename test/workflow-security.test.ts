@@ -19,8 +19,55 @@ jobs:
 
   assert.deepEqual(
     findings.map((finding) => finding.ruleId).sort(),
-    ["action-unpinned", "permissions-write-all", "unsafe-pull-request-target"],
+    ["action-unpinned", "checkout-persists-credentials", "permissions-write-all", "unsafe-pull-request-target"],
   );
+});
+
+test("detects expression injection and self-hosted pull-request execution", () => {
+  const findings = checkWorkflowSecurity(
+    ".github/workflows/review.yml",
+    `name: Review
+on: [pull_request]
+permissions:
+  contents: read
+jobs:
+  review:
+    runs-on: [self-hosted, linux]
+    steps:
+      - run: echo "\${{ github.event.pull_request.title }}"
+`,
+  );
+  assert.deepEqual(findings.map((finding) => finding.ruleId).sort(), ["expression-injection", "self-hosted-untrusted"]);
+  assert.equal(findings[0]?.location?.startLine, 9);
+});
+
+test("detects privileged artifact, OIDC, untrusted ref and cache use", () => {
+  const findings = checkWorkflowSecurity(
+    ".github/workflows/follow-up.yml",
+    `name: Follow-up
+on:
+  workflow_run:
+permissions:
+  contents: read
+  id-token: write
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v5
+      - uses: actions/checkout@v5
+        with:
+          ref: "\${{ github.event.pull_request.head.sha }}"
+          persist-credentials: false
+      - uses: actions/cache@v4
+        with:
+          key: "review-\${{ github.head_ref }}"
+`,
+  );
+  const ids = findings.map((finding) => finding.ruleId);
+  for (const expected of ["unsafe-workflow-run", "privileged-oidc", "workflow-artifact-trust", "untrusted-checkout-ref", "cache-key-untrusted"]) {
+    assert.ok(ids.includes(expected), `missing ${expected}`);
+  }
 });
 
 test("accepts a SHA-pinned action and restricted permissions", () => {

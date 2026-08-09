@@ -1,0 +1,1 @@
+export const OPENMAINTAINER_VERSION = "0.2.0";
