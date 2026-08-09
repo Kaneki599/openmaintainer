@@ -25,7 +25,10 @@ jobs:
       - run: npm test
       - name: Build package archive
         id: package
-        run: echo "file=$(npm pack --silent)" >> "$GITHUB_OUTPUT"
+        run: |
+          npm run build
+          npm run bundle:action
+          echo "file=$(npm pack --ignore-scripts --silent)" >> "$GITHUB_OUTPUT"
       - name: Create GitHub release
         env:
           GH_TOKEN: ${{ github.token }}
