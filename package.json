@@ -49,10 +49,10 @@
   },
   "homepage": "https://github.com/Kaneki599/openmaintainer#readme",
   "devDependencies": {
-    "@types/node": "^22.0.0",
+    "@types/node": "^26.1.2",
     "esbuild": "^0.28.2",
     "tsx": "^4.19.0",
-    "typescript": "^5.7.0"
+    "typescript": "^7.0.2"
   },
   "dependencies": {
     "yaml": "^2.9.0"
