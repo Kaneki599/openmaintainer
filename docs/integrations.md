@@ -63,3 +63,15 @@ Only repository health files and `.github/workflows/*.yml` are downloaded into
 an isolated temporary directory for analysis. The directory is removed after
 each repository. Archived repositories are excluded unless
 `--include-archived` is supplied.
+
+## Container
+
+Versioned, compatible-major, and latest images are published to GitHub Container
+Registry:
+
+```sh
+docker run --rm -v "$PWD:/workspace" ghcr.io/kaneki599/openmaintainer:v0 scan . \
+  --format html --output report.html
+```
+
+Use a version tag such as `v0.2.1` when an immutable deployment reference is required.

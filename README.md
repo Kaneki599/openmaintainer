@@ -163,6 +163,31 @@ The local `scan` command and GitHub Action do not require an OpenMaintainer acco
 The action is read-only. It scans the checked-out repository and writes a
 report; it does not upload source code or alter workflow files.
 
+## Other installation modes
+
+The release archive can be installed directly until the npm package is available:
+
+```sh
+npm install https://github.com/Kaneki599/openmaintainer/releases/download/v0.2.1/openmaintainer-0.2.1.tgz
+npx openmaintainer scan .
+```
+
+Run the published container against the current repository:
+
+```sh
+docker run --rm -v "$PWD:/workspace" ghcr.io/kaneki599/openmaintainer:v0 scan .
+```
+
+For repositories using [pre-commit](https://pre-commit.com/):
+
+```yaml
+repos:
+  - repo: https://github.com/Kaneki599/openmaintainer
+    rev: v0.2.1
+    hooks:
+      - id: openmaintainer
+```
+
 ## Releases and Marketplace
 
 Use an exact release tag when reproducibility is the priority. The `v0` tag is
