@@ -1,0 +1,6 @@
+- id: openmaintainer
+  name: OpenMaintainer repository checks
+  description: Run explainable workflow security and repository health checks.
+  entry: openmaintainer scan . --preset starter --no-baseline
+  language: node
+  pass_filenames: false
