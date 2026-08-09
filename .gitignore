@@ -3,3 +3,23 @@ dist/*
 !dist/action.cjs
 .openmaintainer/
 *.log
+
+# Local environment and registry credentials
+.env
+.env.*
+!.env.example
+.npmrc
+
+# Private keys and certificate stores
+*.key
+*.pem
+*.p12
+*.pfx
+*.jks
+*.keystore
+id_rsa*
+id_ed25519*
+
+# Common local credential exports
+credentials.json
+service-account*.json
