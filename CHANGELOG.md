@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.3 — 2026-08-09
+
+- Use a distinctive GitHub Marketplace listing name while keeping the OpenMaintainer product name.
+- Clarify the Action description for repository security and maintenance checks.
+
 ## 0.2.2 — 2026-08-09
 
 - Verify the CLI on Node.js 20, 22, and 24 in continuous integration.

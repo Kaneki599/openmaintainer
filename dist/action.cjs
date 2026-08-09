@@ -7987,7 +7987,7 @@ async function runRules(context, rules = builtInRules) {
 }
 
 // src/version.ts
-var OPENMAINTAINER_VERSION = "0.2.2";
+var OPENMAINTAINER_VERSION = "0.2.3";
 
 // src/scanner.ts
 var import_node_child_process = require("node:child_process");

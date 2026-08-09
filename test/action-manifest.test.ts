@@ -7,7 +7,12 @@ test("action manifest is valid YAML and points to the bundled entry point", asyn
   const source = await readFile(new URL("../action.yml", import.meta.url), "utf8");
   const document = parseDocument(source);
   assert.equal(document.errors.length, 0);
-  const manifest = document.toJS() as { runs: { using: string; main: string }; branding: { icon: string; color: string } };
+  const manifest = document.toJS() as {
+    name: string;
+    runs: { using: string; main: string };
+    branding: { icon: string; color: string };
+  };
+  assert.equal(manifest.name, "OpenMaintainer Health Gate");
   assert.deepEqual(manifest.runs, { using: "node24", main: "dist/action.cjs" });
   assert.deepEqual(manifest.branding, { icon: "shield", color: "purple" });
 });

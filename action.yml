@@ -1,5 +1,5 @@
-name: OpenMaintainer
-description: Explainable GitHub Actions security checks for the checked-out repository.
+name: OpenMaintainer Health Gate
+description: Explainable repository security and maintenance checks for GitHub Actions and CI.
 inputs:
   target:
     description: Repository directory to scan.
