@@ -168,7 +168,7 @@ report; it does not upload source code or alter workflow files.
 The release archive can be installed directly until the npm package is available:
 
 ```sh
-npm install https://github.com/Kaneki599/openmaintainer/releases/download/v0.2.3/openmaintainer-0.2.3.tgz
+npm install https://github.com/Kaneki599/openmaintainer/releases/download/v0.2.4/openmaintainer-0.2.4.tgz
 npx openmaintainer scan .
 ```
 
@@ -183,7 +183,7 @@ For repositories using [pre-commit](https://pre-commit.com/):
 ```yaml
 repos:
   - repo: https://github.com/Kaneki599/openmaintainer
-    rev: v0.2.3
+    rev: v0.2.4
     hooks:
       - id: openmaintainer
 ```

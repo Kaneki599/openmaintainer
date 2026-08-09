@@ -136,7 +136,7 @@ async function runInit(root: string): Promise<number> {
   const workflowPath = resolve(root, ".github/workflows/openmaintainer.yml");
   await mkdir(dirname(workflowPath), { recursive: true });
   await writeExclusive(configPath, `version: 1\npreset: maintainer\nfailOn: error\nbaseline:\n  file: .openmaintainer/baseline.json\n  mode: new\ngithub:\n  annotations: true\n  summary: true\n  pullRequestComment: false\n`);
-  await writeExclusive(workflowPath, `name: OpenMaintainer\non:\n  pull_request:\n  push:\n    branches: [main]\npermissions:\n  contents: read\njobs:\n  scan:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0\n      - uses: Kaneki599/openmaintainer@11154c3f51c5b055d56826b49aa4627db6c86b1e # v0.2.0\n`);
+  await writeExclusive(workflowPath, `name: OpenMaintainer\non:\n  pull_request:\n  push:\n    branches: [main]\npermissions:\n  contents: read\njobs:\n  scan:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0\n      - uses: Kaneki599/openmaintainer@a88378f576bfe5c88ab6281258df1ad7b18119f2 # v0.2.3\n`);
   process.stdout.write(`Created ${configPath}\nCreated ${workflowPath}\n`);
   return 0;
 }
