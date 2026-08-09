@@ -74,4 +74,4 @@ docker run --rm -v "$PWD:/workspace" ghcr.io/kaneki599/openmaintainer:v0 scan . 
   --format html --output report.html
 ```
 
-Use a version tag such as `v0.2.1` when an immutable deployment reference is required.
+Use a version tag such as `v0.2.2` when an immutable deployment reference is required.

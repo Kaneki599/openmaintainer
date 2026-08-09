@@ -1,1 +1,1 @@
-export const OPENMAINTAINER_VERSION = "0.2.1";
+export const OPENMAINTAINER_VERSION = "0.2.2";

@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.2 — 2026-08-09
+
+- Verify the CLI on Node.js 20, 22, and 24 in continuous integration.
+- Publish multi-architecture container images for Linux amd64 and arm64.
+- Move container publishing actions to their Node.js 24 releases.
+- Keep unavailable repositories visible without aborting an organization portfolio scan.
+- Explain anonymous GitHub API rate limits with direct token guidance.
+
 ## 0.2.1 — 2026-08-09
 
 - Detect direct download-to-shell execution and world-writable file permissions.
