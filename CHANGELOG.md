@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.2.0 — 2026-08-09
+
+- Replace text matching with structural YAML workflow analysis and exact source locations.
+- Expand to 28 workflow security, repository, maintenance, release, and supply-chain rules.
+- Add effective starter, maintainer, security, and strict presets.
+- Add versioned configuration, shared policy layering, expiring suppressions, and baselines.
+- Add terminal, Markdown, JSON v2, SARIF 2.1.0, and standalone HTML reports.
+- Add native annotations, job summaries, and optional idempotent pull-request comments.
+- Add SARIF and OpenSSF Scorecard aggregation.
+- Add GitHub organization or user portfolio analysis with HTML and JSON output.
+- Prepare the CLI package for npm distribution.
+
 ## 0.1.2 — 2026-08-08
 
 - Add GitHub Marketplace branding and a stable major-version release channel.

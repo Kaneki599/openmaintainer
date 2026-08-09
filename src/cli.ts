@@ -45,13 +45,13 @@ Common scan options:
 export async function run(args: string[]): Promise<number> {
   try {
     switch (args[0]) {
-      case "scan": return runScan(parseScanArguments(args.slice(1)));
-      case "init": return runInit(resolve(positional(args.slice(1))[0] ?? "."));
-      case "baseline": return runBaseline(args.slice(1));
-      case "aggregate": return runAggregate(args.slice(1));
-      case "github": return runGitHub(args.slice(1));
+      case "scan": return await runScan(parseScanArguments(args.slice(1)));
+      case "init": return await runInit(resolve(positional(args.slice(1))[0] ?? "."));
+      case "baseline": return await runBaseline(args.slice(1));
+      case "aggregate": return await runAggregate(args.slice(1));
+      case "github": return await runGitHub(args.slice(1));
       case "rules": return runRulesCommand(args.slice(1));
-      case "doctor": return runDoctor(resolve(positional(args.slice(1))[0] ?? "."));
+      case "doctor": return await runDoctor(resolve(positional(args.slice(1))[0] ?? "."));
       case "--version":
       case "-v": process.stdout.write(`${OPENMAINTAINER_VERSION}\n`); return 0;
       case "--help":
@@ -136,7 +136,7 @@ async function runInit(root: string): Promise<number> {
   const workflowPath = resolve(root, ".github/workflows/openmaintainer.yml");
   await mkdir(dirname(workflowPath), { recursive: true });
   await writeExclusive(configPath, `version: 1\npreset: maintainer\nfailOn: error\nbaseline:\n  file: .openmaintainer/baseline.json\n  mode: new\ngithub:\n  annotations: true\n  summary: true\n  pullRequestComment: false\n`);
-  await writeExclusive(workflowPath, `name: OpenMaintainer\non:\n  pull_request:\n  push:\n    branches: [main]\npermissions:\n  contents: read\njobs:\n  scan:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0\n      - uses: Kaneki599/openmaintainer@v0\n`);
+  await writeExclusive(workflowPath, `name: OpenMaintainer\non:\n  pull_request:\n  push:\n    branches: [main]\npermissions:\n  contents: read\njobs:\n  scan:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0\n      - uses: Kaneki599/openmaintainer@11154c3f51c5b055d56826b49aa4627db6c86b1e # v0.2.0\n`);
   process.stdout.write(`Created ${configPath}\nCreated ${workflowPath}\n`);
   return 0;
 }
