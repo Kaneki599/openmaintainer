@@ -6,22 +6,71 @@ inputs:
     required: false
     default: .
   format:
-    description: "Report format: markdown or json."
+    description: "Report format: terminal, markdown, json, sarif, or html."
     required: false
     default: markdown
+  formats:
+    description: "Comma-separated formats: terminal, markdown, json, sarif, html."
+    required: false
+  report-directory:
+    description: Directory used when multiple formats are requested.
+    required: false
+    default: .openmaintainer/reports
   output:
     description: File to write the report to.
     required: false
     default: openmaintainer-report.md
   fail-on-error:
-    description: Fail the action when an error-severity finding is detected.
+    description: Deprecated compatibility switch; use fail-on.
     required: false
-    default: "true"
+  fail-on:
+    description: "Failure threshold: error, warning, info, or never."
+    required: false
+  config:
+    description: Configuration file relative to the target directory.
+    required: false
+  policy:
+    description: Shared policy file applied before repository configuration.
+    required: false
+  changed-since:
+    description: Report findings only in files changed since this Git ref.
+    required: false
+  preset:
+    description: "Policy preset: starter, maintainer, security, or strict."
+    required: false
+  annotations:
+    description: Emit native GitHub annotations.
+    required: false
+  summary:
+    description: Add the Markdown report to the GitHub job summary.
+    required: false
+  pull-request-comment:
+    description: Create or update one OpenMaintainer pull request comment.
+    required: false
+  github-token:
+    description: GitHub token used only when pull-request-comment is enabled.
+    required: false
 outputs:
   report-path:
     description: The generated report file.
   error-count:
     description: Number of error-severity findings.
+  warning-count:
+    description: Number of warning-severity findings.
+  new-count:
+    description: Number of findings absent from the baseline.
+  resolved-count:
+    description: Number of baseline findings no longer present.
+  markdown-path:
+    description: Generated Markdown report path.
+  json-path:
+    description: Generated JSON report path.
+  sarif-path:
+    description: Generated SARIF report path.
+  html-path:
+    description: Generated standalone HTML report path.
+  status:
+    description: Passed or failed according to policy.
 runs:
   using: node24
   main: dist/action.cjs

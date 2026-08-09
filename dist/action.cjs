@@ -42,10 +42,10 @@ var require_identity = __commonJS({
     var NODE_TYPE = /* @__PURE__ */ Symbol.for("yaml.node.type");
     var isAlias = (node) => !!node && typeof node === "object" && node[NODE_TYPE] === ALIAS;
     var isDocument = (node) => !!node && typeof node === "object" && node[NODE_TYPE] === DOC;
-    var isMap = (node) => !!node && typeof node === "object" && node[NODE_TYPE] === MAP;
+    var isMap2 = (node) => !!node && typeof node === "object" && node[NODE_TYPE] === MAP;
     var isPair = (node) => !!node && typeof node === "object" && node[NODE_TYPE] === PAIR;
-    var isScalar = (node) => !!node && typeof node === "object" && node[NODE_TYPE] === SCALAR;
-    var isSeq = (node) => !!node && typeof node === "object" && node[NODE_TYPE] === SEQ;
+    var isScalar2 = (node) => !!node && typeof node === "object" && node[NODE_TYPE] === SCALAR;
+    var isSeq2 = (node) => !!node && typeof node === "object" && node[NODE_TYPE] === SEQ;
     function isCollection(node) {
       if (node && typeof node === "object")
         switch (node[NODE_TYPE]) {
@@ -66,7 +66,7 @@ var require_identity = __commonJS({
         }
       return false;
     }
-    var hasAnchor = (node) => (isScalar(node) || isCollection(node)) && !!node.anchor;
+    var hasAnchor = (node) => (isScalar2(node) || isCollection(node)) && !!node.anchor;
     exports2.ALIAS = ALIAS;
     exports2.DOC = DOC;
     exports2.MAP = MAP;
@@ -78,11 +78,11 @@ var require_identity = __commonJS({
     exports2.isAlias = isAlias;
     exports2.isCollection = isCollection;
     exports2.isDocument = isDocument;
-    exports2.isMap = isMap;
+    exports2.isMap = isMap2;
     exports2.isNode = isNode;
     exports2.isPair = isPair;
-    exports2.isScalar = isScalar;
-    exports2.isSeq = isSeq;
+    exports2.isScalar = isScalar2;
+    exports2.isSeq = isSeq2;
   }
 });
 
@@ -4188,9 +4188,9 @@ var require_resolve_flow_collection = __commonJS({
     var blockMsg = "Block collections are not allowed within flow collections";
     var isBlock = (token) => token && (token.type === "block-map" || token.type === "block-seq");
     function resolveFlowCollection({ composeNode, composeEmptyNode }, ctx, fc, onError, tag) {
-      const isMap = fc.start.source === "{";
-      const fcName = isMap ? "flow map" : "flow sequence";
-      const NodeClass = tag?.nodeClass ?? (isMap ? YAMLMap.YAMLMap : YAMLSeq.YAMLSeq);
+      const isMap2 = fc.start.source === "{";
+      const fcName = isMap2 ? "flow map" : "flow sequence";
+      const NodeClass = tag?.nodeClass ?? (isMap2 ? YAMLMap.YAMLMap : YAMLSeq.YAMLSeq);
       const coll = new NodeClass(ctx.schema);
       coll.flow = true;
       const atRoot = ctx.atRoot;
@@ -4226,7 +4226,7 @@ var require_resolve_flow_collection = __commonJS({
             offset = props.end;
             continue;
           }
-          if (!isMap && ctx.options.strict && utilContainsNewline.containsNewline(key))
+          if (!isMap2 && ctx.options.strict && utilContainsNewline.containsNewline(key))
             onError(
               key,
               // checked by containsNewline()
@@ -4266,7 +4266,7 @@ var require_resolve_flow_collection = __commonJS({
             }
           }
         }
-        if (!isMap && !sep && !props.found) {
+        if (!isMap2 && !sep && !props.found) {
           const valueNode = value ? composeNode(ctx, value, props, onError) : composeEmptyNode(ctx, props.end, sep, null, props, onError);
           coll.items.push(valueNode);
           offset = valueNode.range[2];
@@ -4289,7 +4289,7 @@ var require_resolve_flow_collection = __commonJS({
             startOnNewline: false
           });
           if (valueProps.found) {
-            if (!isMap && !props.found && ctx.options.strict) {
+            if (!isMap2 && !props.found && ctx.options.strict) {
               if (sep)
                 for (const st of sep) {
                   if (st === valueProps.found)
@@ -4321,7 +4321,7 @@ var require_resolve_flow_collection = __commonJS({
           const pair = new Pair.Pair(keyNode, valueNode);
           if (ctx.options.keepSourceTokens)
             pair.srcToken = collItem;
-          if (isMap) {
+          if (isMap2) {
             const map = coll;
             if (utilMapIncludes.mapIncludes(ctx, map.items, keyNode))
               onError(keyStart, "DUPLICATE_KEY", "Map keys must be unique");
@@ -4337,7 +4337,7 @@ var require_resolve_flow_collection = __commonJS({
           offset = valueNode ? valueNode.range[2] : valueProps.end;
         }
       }
-      const expectedEnd = isMap ? "}" : "]";
+      const expectedEnd = isMap2 ? "}" : "]";
       const [ce, ...ee] = fc.end;
       let cePos = offset;
       if (ce?.source === expectedEnd)
@@ -5623,7 +5623,7 @@ var require_cst = __commonJS({
     var FLOW_END = "";
     var SCALAR = "";
     var isCollection = (token) => !!token && "items" in token;
-    var isScalar = (token) => !!token && (token.type === "scalar" || token.type === "single-quoted-scalar" || token.type === "double-quoted-scalar" || token.type === "block-scalar");
+    var isScalar2 = (token) => !!token && (token.type === "scalar" || token.type === "single-quoted-scalar" || token.type === "double-quoted-scalar" || token.type === "block-scalar");
     function prettyToken(token) {
       switch (token) {
         case BOM:
@@ -5707,7 +5707,7 @@ var require_cst = __commonJS({
     exports2.FLOW_END = FLOW_END;
     exports2.SCALAR = SCALAR;
     exports2.isCollection = isCollection;
-    exports2.isScalar = isScalar;
+    exports2.isScalar = isScalar2;
     exports2.prettyToken = prettyToken;
     exports2.tokenType = tokenType;
   }
@@ -6306,7 +6306,7 @@ var require_lexer = __commonJS({
 var require_line_counter = __commonJS({
   "node_modules/yaml/dist/parse/line-counter.js"(exports2) {
     "use strict";
-    var LineCounter = class {
+    var LineCounter2 = class {
       constructor() {
         this.lineStarts = [];
         this.addNewLine = (offset) => this.lineStarts.push(offset);
@@ -6329,7 +6329,7 @@ var require_line_counter = __commonJS({
         };
       }
     };
-    exports2.LineCounter = LineCounter;
+    exports2.LineCounter = LineCounter2;
   }
 });
 
@@ -7357,231 +7357,800 @@ var require_dist = __commonJS({
 });
 
 // src/action.ts
-var import_promises3 = require("node:fs/promises");
-var import_node_path3 = require("node:path");
+var import_promises5 = require("node:fs/promises");
+var import_node_path5 = require("node:path");
 
 // src/reporters.ts
 var severityOrder = { error: 0, warning: 1, info: 2 };
+function formatReport(report, format) {
+  switch (format) {
+    case "terminal":
+      return formatTerminal(report);
+    case "markdown":
+      return formatMarkdown(report);
+    case "json":
+      return `${JSON.stringify(report, null, 2)}
+`;
+    case "sarif":
+      return `${JSON.stringify(formatSarif(report), null, 2)}
+`;
+    case "html":
+      return formatHtml(report);
+  }
+}
+function formatTerminal(report, color = process.stdout.isTTY) {
+  const paint = (code, value) => color ? `\x1B[${code}m${value}\x1B[0m` : value;
+  const lines = [
+    paint(1, "OpenMaintainer"),
+    `${report.summary.errors} errors \xB7 ${report.summary.warnings} warnings \xB7 ${report.summary.info} info`,
+    `${report.summary.newFindings} new \xB7 ${report.summary.existingFindings} existing \xB7 ${report.summary.resolvedFindings} resolved`,
+    `${report.coverage.executedRules.length} rules executed in ${report.durationMs} ms`,
+    ""
+  ];
+  for (const finding2 of sortedFindings(report.findings)) {
+    const code = finding2.severity === "error" ? 31 : finding2.severity === "warning" ? 33 : 36;
+    lines.push(`${paint(code, finding2.severity.toUpperCase())} ${finding2.ruleId} ${formatLocation(finding2)}`);
+    lines.push(`  ${finding2.message}`);
+    lines.push(`  Fix: ${finding2.remediation}`);
+    lines.push("");
+  }
+  if (report.findings.length === 0) lines.push(paint(32, "No findings from the enabled checks."));
+  return `${lines.join("\n")}
+`;
+}
 function formatMarkdown(report) {
-  const findings = [...report.findings].sort(
-    (left, right) => severityOrder[left.severity] - severityOrder[right.severity] || left.path.localeCompare(right.path)
-  );
-  const summary = findings.reduce(
-    (counts, finding2) => ({ ...counts, [finding2.severity]: counts[finding2.severity] + 1 }),
-    { error: 0, warning: 0, info: 0 }
-  );
   const lines = [
     "# OpenMaintainer report",
     "",
-    `Scanned \`${report.root}\` at ${report.scannedAt}.`,
+    `Scanned \`${report.root}\` at ${report.scannedAt} in ${report.durationMs} ms.`,
     "",
-    `**${summary.error} errors \xB7 ${summary.warning} warnings \xB7 ${summary.info} info**`,
+    `**${report.summary.errors} errors \xB7 ${report.summary.warnings} warnings \xB7 ${report.summary.info} info**`,
+    "",
+    `Baseline: ${report.summary.newFindings} new \xB7 ${report.summary.existingFindings} existing \xB7 ${report.summary.resolvedFindings} resolved`,
+    "",
+    `Coverage: ${report.coverage.executedRules.length} rules executed \xB7 ${report.coverage.skippedRules.length} skipped`,
     ""
   ];
-  if (findings.length === 0) {
-    lines.push("No findings from the enabled checks.");
-  } else {
-    for (const finding2 of findings) {
-      const location = finding2.line ? `${finding2.path}:${finding2.line}` : finding2.path;
-      lines.push(`## ${finding2.severity.toUpperCase()} \u2014 ${finding2.ruleId}`);
-      lines.push(`**${location}** \u2014 ${finding2.message}`);
-      lines.push("");
-      lines.push(`Remediation: ${finding2.remediation}`);
-      lines.push("");
-    }
+  if (report.findings.length === 0) lines.push("No findings from the enabled checks.");
+  for (const finding2 of sortedFindings(report.findings)) {
+    lines.push(`## ${finding2.severity.toUpperCase()} \u2014 ${finding2.ruleId} (${finding2.status ?? "new"})`);
+    lines.push(`**${formatLocation(finding2)}** \u2014 ${finding2.message}`);
+    lines.push("");
+    lines.push(`Remediation: ${finding2.remediation}`);
+    lines.push("");
+    lines.push(`[Rule documentation](${finding2.helpUri})`);
+    lines.push("");
   }
   return `${lines.join("\n")}
 `;
 }
+function formatSarif(report) {
+  const rules = [...new Map(report.findings.map((finding2) => [finding2.ruleId, finding2])).values()].map((finding2) => ({
+    id: finding2.ruleId,
+    name: finding2.ruleId.replaceAll("-", "_"),
+    shortDescription: { text: finding2.title },
+    fullDescription: { text: finding2.message },
+    helpUri: finding2.helpUri,
+    defaultConfiguration: { level: sarifLevel(finding2.severity) },
+    properties: { tags: [finding2.category, finding2.confidence] }
+  }));
+  return {
+    version: "2.1.0",
+    $schema: "https://json.schemastore.org/sarif-2.1.0.json",
+    runs: [{
+      tool: { driver: { name: "OpenMaintainer", version: report.tool.version, informationUri: "https://github.com/Kaneki599/openmaintainer", rules } },
+      automationDetails: { id: "openmaintainer/" },
+      results: report.findings.map((finding2) => ({
+        ruleId: finding2.ruleId,
+        level: sarifLevel(finding2.severity),
+        message: { text: `${finding2.message} ${finding2.remediation}` },
+        locations: finding2.location ? [{ physicalLocation: {
+          artifactLocation: { uri: finding2.location.path.replaceAll("\\", "/"), uriBaseId: "%SRCROOT%" },
+          region: {
+            startLine: finding2.location.startLine ?? 1,
+            startColumn: finding2.location.startColumn ?? 1,
+            endLine: finding2.location.endLine,
+            endColumn: finding2.location.endColumn
+          }
+        } }] : void 0,
+        partialFingerprints: { "openmaintainer/v1": finding2.fingerprint },
+        properties: { status: finding2.status, confidence: finding2.confidence, category: finding2.category }
+      }))
+    }]
+  };
+}
+function formatHtml(report) {
+  const rows = sortedFindings(report.findings).map((finding2) => `<tr data-severity="${finding2.severity}"><td><span class="pill ${finding2.severity}">${finding2.severity}</span></td><td><strong>${escapeHtml(finding2.title)}</strong><br><code>${escapeHtml(finding2.ruleId)}</code></td><td><code>${escapeHtml(formatLocation(finding2))}</code></td><td>${escapeHtml(finding2.message)}<br><span class="fix">${escapeHtml(finding2.remediation)}</span></td></tr>`).join("");
+  return `<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>OpenMaintainer report</title>
+<style>:root{color-scheme:dark;font-family:Inter,system-ui,sans-serif;background:#08111f;color:#e2e8f0}body{margin:0;padding:32px}.shell{max-width:1200px;margin:auto}.hero{padding:28px;border-radius:24px;background:linear-gradient(135deg,#172554,#312e81);box-shadow:0 18px 60px #020617}.metrics{display:flex;gap:12px;flex-wrap:wrap}.metric{padding:12px 16px;border-radius:14px;background:#0f172acc}.toolbar{margin:22px 0;display:flex;gap:8px}.toolbar button{color:#e2e8f0;background:#1e293b;border:0;border-radius:10px;padding:10px 14px;cursor:pointer}table{width:100%;border-collapse:collapse;background:#0f172a;border-radius:18px;overflow:hidden}th,td{text-align:left;padding:14px;border-bottom:1px solid #243247;vertical-align:top}.pill{padding:4px 8px;border-radius:999px;font-weight:800}.error{background:#7f1d1d}.warning{background:#78350f}.info{background:#164e63}.fix{color:#93c5fd}code{color:#c4b5fd}@media(max-width:800px){body{padding:14px}table{display:block;overflow:auto}}</style></head>
+<body><main class="shell"><section class="hero"><h1>OpenMaintainer report</h1><p>${escapeHtml(report.root)} \xB7 ${escapeHtml(report.scannedAt)}</p><div class="metrics"><span class="metric">${report.summary.errors} errors</span><span class="metric">${report.summary.warnings} warnings</span><span class="metric">${report.summary.info} info</span><span class="metric">${report.summary.newFindings} new</span><span class="metric">${report.summary.resolvedFindings} resolved</span></div></section>
+<nav class="toolbar" aria-label="Finding filters"><button data-filter="all">All</button><button data-filter="error">Errors</button><button data-filter="warning">Warnings</button><button data-filter="info">Info</button></nav>
+<table><thead><tr><th>Severity</th><th>Rule</th><th>Location</th><th>Finding and remediation</th></tr></thead><tbody>${rows || '<tr><td colspan="4">No findings from the enabled checks.</td></tr>'}</tbody></table></main>
+<script>for(const button of document.querySelectorAll('[data-filter]'))button.addEventListener('click',()=>{const filter=button.dataset.filter;for(const row of document.querySelectorAll('tbody tr[data-severity]'))row.hidden=filter!=='all'&&row.dataset.severity!==filter})</script></body></html>
+`;
+}
+function sortedFindings(findings) {
+  return [...findings].sort((left, right) => severityOrder[left.severity] - severityOrder[right.severity] || (left.location?.path ?? "").localeCompare(right.location?.path ?? "") || (left.location?.startLine ?? 0) - (right.location?.startLine ?? 0));
+}
+function formatLocation(finding2) {
+  if (!finding2.location) return "repository";
+  return `${finding2.location.path}${finding2.location.startLine ? `:${finding2.location.startLine}${finding2.location.startColumn ? `:${finding2.location.startColumn}` : ""}` : ""}`;
+}
+function sarifLevel(severity) {
+  return severity === "info" ? "note" : severity;
+}
+function escapeHtml(value) {
+  return value.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#39;");
+}
 
 // src/scanner.ts
-var import_promises2 = require("node:fs/promises");
-var import_node_path2 = require("node:path");
+var import_promises4 = require("node:fs/promises");
+var import_node_path4 = require("node:path");
 
-// src/config.ts
+// src/baseline.ts
 var import_promises = require("node:fs/promises");
 var import_node_path = require("node:path");
-var import_yaml = __toESM(require_dist(), 1);
-async function loadConfig(root) {
-  const filename = (0, import_node_path.join)(root, "openmaintainer.yml");
+async function loadBaseline(root, path) {
+  const filename = (0, import_node_path.join)(root, path);
   try {
-    const source = await (0, import_promises.readFile)(filename, "utf8");
-    const document = (0, import_yaml.parseDocument)(source);
-    if (document.errors.length > 0) throw new Error(`Invalid openmaintainer.yml: ${document.errors[0]?.message}`);
-    const config = document.toJS();
-    if (!config || config.ignore !== void 0 && (!Array.isArray(config.ignore) || !config.ignore.every((id) => typeof id === "string"))) {
-      throw new Error("openmaintainer.yml 'ignore' must be a list of rule identifiers.");
-    }
-    return { ignore: new Set(config.ignore ?? []) };
+    const parsed = JSON.parse(await (0, import_promises.readFile)(filename, "utf8"));
+    if (parsed.version !== 1 || !Array.isArray(parsed.findings)) throw new Error(`${path} is not a supported baseline file.`);
+    return parsed;
   } catch (error) {
-    if (isMissingFile(error)) return { ignore: /* @__PURE__ */ new Set() };
+    if (isMissingFile(error)) return null;
     throw error;
   }
+}
+function compareBaseline(findings, baseline) {
+  const previous = new Map((baseline?.findings ?? []).map((finding2) => [finding2.fingerprint, finding2]));
+  const current = new Set(findings.map((finding2) => finding2.fingerprint));
+  const marked = findings.map((finding2) => ({ ...finding2, status: previous.has(finding2.fingerprint) ? "existing" : "new" }));
+  const resolved = [...previous.values()].filter((finding2) => !current.has(finding2.fingerprint));
+  return { findings: marked, resolved };
 }
 function isMissingFile(error) {
   return typeof error === "object" && error !== null && error.code === "ENOENT";
 }
 
-// src/rules/workflow-security.ts
-var import_yaml2 = __toESM(require_dist(), 1);
-var SHA_PIN = /^[a-f0-9]{40}$/i;
-function lineOf(source, match) {
-  const index = source.search(match);
-  return index < 0 ? void 0 : source.slice(0, index).split("\n").length;
-}
-function finding(ruleId, severity, message, path, remediation, line) {
-  return { ruleId, severity, message, path, line, remediation };
-}
-function checkWorkflowSecurity(path, source) {
-  const findings = [];
-  const document = (0, import_yaml2.parseDocument)(source);
-  if (document.errors.length > 0) {
-    findings.push(
-      finding(
-        "workflow-invalid-yaml",
-        "error",
-        "The workflow is not valid YAML.",
-        path,
-        "Fix the YAML syntax before relying on this workflow."
-      )
-    );
-    return findings;
-  }
-  const usesPattern = /^\s*(?:-\s*)?uses:\s*([^\s#]+)/gm;
-  for (const match of source.matchAll(usesPattern)) {
-    const reference = match[1];
-    const line = lineOf(source, new RegExp(`^\\s*(?:-\\s*)?uses:\\s*${escapeRegExp(reference)}`, "m"));
-    if (reference.startsWith("./") || reference.startsWith("docker://") || !reference.includes("@")) {
-      continue;
+// src/config.ts
+var import_promises2 = require("node:fs/promises");
+var import_node_path2 = require("node:path");
+var import_yaml = __toESM(require_dist(), 1);
+var STARTER_RULES = /* @__PURE__ */ new Set([
+  "workflow-invalid-yaml",
+  "action-unpinned",
+  "permissions-write-all",
+  "unsafe-pull-request-target",
+  "expression-injection",
+  "self-hosted-untrusted",
+  "repository-readme-missing",
+  "repository-license-missing",
+  "security-policy-missing"
+]);
+async function loadConfig(root, explicitPath, policyPath) {
+  const filename = explicitPath ?? (0, import_node_path2.join)(root, "openmaintainer.yml");
+  try {
+    const local = await loadConfigFile(filename, /* @__PURE__ */ new Set());
+    const policy = policyPath ? await loadConfigFile((0, import_node_path2.resolve)(policyPath), /* @__PURE__ */ new Set()) : {};
+    return resolveConfig(mergeConfigs(policy, local));
+  } catch (error) {
+    if (isMissingFile2(error) && !explicitPath) {
+      const policy = policyPath ? await loadConfigFile((0, import_node_path2.resolve)(policyPath), /* @__PURE__ */ new Set()) : {};
+      return resolveConfig(policy);
     }
-    const revision = reference.slice(reference.lastIndexOf("@") + 1);
-    if (!SHA_PIN.test(revision)) {
-      findings.push(
-        finding(
-          "action-unpinned",
-          "warning",
-          `Action '${reference}' is pinned to a mutable tag or branch.`,
-          path,
-          "Pin third-party actions to a full commit SHA and document the version in a comment.",
-          line
-        )
-      );
+    throw error;
+  }
+}
+async function loadConfigFile(filename, chain) {
+  const absolute = (0, import_node_path2.resolve)(filename);
+  if (chain.has(absolute)) throw new Error(`Circular configuration inheritance detected at ${absolute}.`);
+  const nextChain = new Set(chain).add(absolute);
+  const source = await (0, import_promises2.readFile)(absolute, "utf8");
+  const document = (0, import_yaml.parseDocument)(source);
+  if (document.errors.length > 0) throw new Error(`Invalid ${absolute}: ${document.errors[0]?.message}`);
+  const current = validateConfig(document.toJS(), absolute);
+  if (!current.extends) return current;
+  const parentPath = (0, import_node_path2.isAbsolute)(current.extends) ? current.extends : (0, import_node_path2.join)((0, import_node_path2.dirname)(absolute), current.extends);
+  return mergeConfigs(await loadConfigFile(parentPath, nextChain), current);
+}
+function mergeConfigs(base, override) {
+  const rules = { ...base.rules };
+  for (const [ruleId, ruleOverride] of Object.entries(override.rules ?? {})) {
+    rules[ruleId] = { ...base.rules?.[ruleId], ...ruleOverride };
+  }
+  return {
+    ...base,
+    ...override,
+    baseline: { ...base.baseline, ...override.baseline },
+    github: { ...base.github, ...override.github },
+    rules,
+    ignore: [...base.ignore ?? [], ...override.ignore ?? []]
+  };
+}
+function resolveConfig(config) {
+  const warnings = [];
+  if (config.ignore?.length) warnings.push("Top-level 'ignore' is deprecated; migrate suppressions into rules.<id>.ignore.");
+  return {
+    version: 1,
+    preset: config.preset ?? "maintainer",
+    failOn: config.failOn ?? "error",
+    baseline: { file: config.baseline?.file ?? ".openmaintainer/baseline.json", mode: config.baseline?.mode ?? "new" },
+    rules: config.rules ?? {},
+    github: {
+      annotations: config.github?.annotations ?? true,
+      summary: config.github?.summary ?? true,
+      pullRequestComment: config.github?.pullRequestComment ?? false
+    },
+    legacyIgnoredRules: new Set(config.ignore ?? []),
+    warnings
+  };
+}
+function isRuleEnabled(ruleId, config, category) {
+  if (config.legacyIgnoredRules.has(ruleId) || config.rules[ruleId]?.enabled === false) return false;
+  if (config.rules[ruleId]?.enabled === true) return true;
+  if (config.preset === "starter") return STARTER_RULES.has(ruleId);
+  if (config.preset === "security") return category === "workflow-security" || category === "supply-chain";
+  return true;
+}
+function severityFor(ruleId, fallback, config) {
+  const explicit = config.rules[ruleId]?.severity;
+  if (explicit) return explicit;
+  if (config.preset === "strict" && fallback === "warning") return "error";
+  return fallback;
+}
+function isSuppressed(ruleId, path, config, now = /* @__PURE__ */ new Date()) {
+  return (config.rules[ruleId]?.ignore ?? []).some((suppression) => {
+    if (suppression.path && suppression.path !== path) return false;
+    return !suppression.expires || /* @__PURE__ */ new Date(`${suppression.expires}T23:59:59.999Z`) >= now;
+  });
+}
+function validateConfig(value, filename) {
+  if (!isRecord(value)) throw new Error(`${filename} must contain a YAML mapping.`);
+  if (value.version !== void 0 && value.version !== 1) throw new Error(`${filename} version must be 1.`);
+  if (value.extends !== void 0 && typeof value.extends !== "string") throw new Error(`${filename} extends must be a file path.`);
+  if (value.preset !== void 0 && !["starter", "maintainer", "security", "strict"].includes(String(value.preset))) {
+    throw new Error(`${filename} preset must be starter, maintainer, security, or strict.`);
+  }
+  if (value.failOn !== void 0 && !["error", "warning", "info", "never"].includes(String(value.failOn))) {
+    throw new Error(`${filename} failOn must be error, warning, info, or never.`);
+  }
+  if (value.ignore !== void 0 && (!Array.isArray(value.ignore) || !value.ignore.every((item) => typeof item === "string"))) {
+    throw new Error(`${filename} ignore must be a list of rule identifiers.`);
+  }
+  if (value.rules !== void 0 && !isRecord(value.rules)) throw new Error(`${filename} rules must be a mapping.`);
+  const config = value;
+  for (const [ruleId, override] of Object.entries(config.rules ?? {})) {
+    if (!isRecord(override)) throw new Error(`${filename} rules.${ruleId} must be a mapping.`);
+    if (override.severity !== void 0 && !["error", "warning", "info"].includes(String(override.severity))) {
+      throw new Error(`${filename} rules.${ruleId}.severity is invalid.`);
+    }
+    if (override.ignore !== void 0) {
+      if (!Array.isArray(override.ignore)) throw new Error(`${filename} rules.${ruleId}.ignore must be a list.`);
+      for (const suppression of override.ignore) {
+        if (!isRecord(suppression) || typeof suppression.reason !== "string" || suppression.reason.trim() === "") {
+          throw new Error(`${filename} rules.${ruleId}.ignore entries require a reason.`);
+        }
+        if (suppression.expires !== void 0 && !/^\d{4}-\d{2}-\d{2}$/.test(String(suppression.expires))) {
+          throw new Error(`${filename} rules.${ruleId}.ignore expires must use YYYY-MM-DD.`);
+        }
+        if (suppression.expires !== void 0 && !isCalendarDate(String(suppression.expires))) {
+          throw new Error(`${filename} rules.${ruleId}.ignore expires must be a real calendar date.`);
+        }
+      }
     }
   }
-  if (/^\s*pull_request_target\s*:/m.test(source)) {
-    findings.push(
-      finding(
-        "unsafe-pull-request-target",
-        "warning",
-        "'pull_request_target' runs with the base repository context.",
-        path,
-        "Avoid checking out or executing pull-request code in this workflow; prefer pull_request where possible.",
-        lineOf(source, /^\s*pull_request_target\s*:/m)
-      )
-    );
-  }
-  if (/^\s*workflow_run\s*:/m.test(source)) {
-    findings.push(
-      finding(
-        "unsafe-workflow-run",
-        "warning",
-        "'workflow_run' can execute with elevated repository permissions after another workflow completes.",
-        path,
-        "Do not use untrusted workflow artifacts or pull-request code in this workflow; restrict permissions to the minimum.",
-        lineOf(source, /^\s*workflow_run\s*:/m)
-      )
-    );
-  }
-  if (/^\s*(?:pull_request_target|workflow_run)\s*:/m.test(source) && /secrets\.[A-Za-z0-9_]+/.test(source)) {
-    findings.push(
-      finding(
-        "secrets-in-privileged-workflow",
-        "error",
-        "A privileged trigger and repository secret are used in the same workflow.",
-        path,
-        "Separate secret-bearing steps from untrusted pull-request or workflow artifact handling, and review the trust boundary.",
-        lineOf(source, /secrets\.[A-Za-z0-9_]+/)
-      )
-    );
-  }
-  if (/^\s*permissions:\s*write-all\s*$/m.test(source)) {
-    findings.push(
-      finding(
-        "permissions-write-all",
-        "error",
-        "Workflow grants write-all permissions to GITHUB_TOKEN.",
-        path,
-        "Declare only the permissions required by the jobs that need them.",
-        lineOf(source, /^\s*permissions:\s*write-all\s*$/m)
-      )
-    );
-  }
-  if (!/^\s*permissions\s*:/m.test(source)) {
-    findings.push(
-      finding(
-        "permissions-implicit",
-        "info",
-        "Workflow does not explicitly restrict GITHUB_TOKEN permissions.",
-        path,
-        "Add a top-level permissions block using the least privileges required."
-      )
-    );
-  }
-  return findings;
+  return config;
 }
-function escapeRegExp(value) {
-  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+function isRecord(value) {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+function isMissingFile2(error) {
+  return typeof error === "object" && error !== null && error.code === "ENOENT";
+}
+function isCalendarDate(value) {
+  const date = /* @__PURE__ */ new Date(`${value}T00:00:00.000Z`);
+  return !Number.isNaN(date.getTime()) && date.toISOString().slice(0, 10) === value;
 }
 
-// src/scanner.ts
-var WORKFLOW_DIRECTORY = ".github/workflows";
-async function scanRepository(root) {
-  const workflowRoot = (0, import_node_path2.join)(root, WORKFLOW_DIRECTORY);
-  const config = await loadConfig(root);
-  const findings = [];
-  try {
-    const entries = await (0, import_promises2.readdir)(workflowRoot, { withFileTypes: true });
-    for (const entry of entries) {
-      if (!entry.isFile() || !/\.ya?ml$/i.test(entry.name)) continue;
-      const filename = (0, import_node_path2.join)(workflowRoot, entry.name);
-      const source = await (0, import_promises2.readFile)(filename, "utf8");
-      findings.push(...checkWorkflowSecurity((0, import_node_path2.relative)(root, filename), source).filter((finding2) => !config.ignore.has(finding2.ruleId)));
+// src/rules/workflow-security.ts
+var import_node_crypto = require("node:crypto");
+
+// src/workflow-model.ts
+var import_yaml2 = __toESM(require_dist(), 1);
+function parseWorkflow(path, source) {
+  const lineCounter = new import_yaml2.LineCounter();
+  const document = (0, import_yaml2.parseDocument)(source, { lineCounter, keepSourceTokens: true, prettyErrors: false });
+  const entries = [];
+  if (document.contents) indexNode(document.contents, [], path, document, lineCounter, entries);
+  const errors = document.errors.map((error) => {
+    const offset = error.pos?.[0] ?? 0;
+    const position = lineCounter.linePos(offset);
+    return {
+      message: error.message,
+      location: { path, startLine: position.line, startColumn: position.col }
+    };
+  });
+  const raw = errors.length === 0 ? document.toJS({ maxAliasCount: 100 }) : null;
+  const data = isRecord2(raw) ? raw : null;
+  return {
+    path,
+    source,
+    data,
+    errors,
+    entries,
+    findByKey: (key) => entries.filter((entry) => entry.key === key),
+    findByPointer: (pointer) => entries.find((entry) => entry.pointer === pointer)
+  };
+}
+function indexNode(node, segments, path, document, lineCounter, entries) {
+  if ((0, import_yaml2.isMap)(node)) {
+    for (const pair of node.items) indexPair(pair, segments, path, document, lineCounter, entries);
+    return;
+  }
+  if ((0, import_yaml2.isSeq)(node)) {
+    node.items.forEach((item, index) => {
+      if (item) indexValue(item, [...segments, index], void 0, path, document, lineCounter, entries);
+    });
+  }
+}
+function indexPair(pair, segments, path, document, lineCounter, entries) {
+  const key = scalarString(pair.key);
+  if (key === void 0 || !pair.value) return;
+  indexValue(pair.value, [...segments, key], key, path, document, lineCounter, entries);
+}
+function indexValue(node, segments, key, path, document, lineCounter, entries) {
+  const pointer = `/${segments.map(escapePointer).join("/")}`;
+  entries.push({ pointer, key, value: node.toJS(document), location: locationFor(path, node, lineCounter) });
+  indexNode(node, segments, path, document, lineCounter, entries);
+}
+function locationFor(path, node, lineCounter) {
+  const start = lineCounter.linePos(node.range?.[0] ?? 0);
+  const end = lineCounter.linePos(node.range?.[1] ?? node.range?.[0] ?? 0);
+  return { path, startLine: start.line, startColumn: start.col, endLine: end.line, endColumn: end.col };
+}
+function scalarString(node) {
+  return (0, import_yaml2.isScalar)(node) ? String(node.value) : void 0;
+}
+function escapePointer(segment) {
+  return String(segment).replaceAll("~", "~0").replaceAll("/", "~1");
+}
+function isRecord2(value) {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+// src/rules/workflow-security.ts
+var SHA_PIN = /^[a-f0-9]{40}$/i;
+var HELP_ROOT = "https://github.com/Kaneki599/openmaintainer/blob/main/docs/rules.md";
+var workflowRules = [
+  rule(meta("workflow-invalid-yaml", "Invalid workflow YAML", "The workflow cannot be parsed reliably.", "error", "high"), invalidYaml),
+  rule(meta("action-unpinned", "Third-party action is not pinned", "Third-party actions should use an immutable commit SHA.", "warning", "high", ["supply-chain"]), unpinnedActions),
+  rule(meta("docker-unpinned", "Docker action image is mutable", "Docker action images should use an immutable digest.", "warning", "high", ["supply-chain"]), unpinnedDockerActions),
+  rule(meta("permissions-write-all", "Workflow grants write-all", "GITHUB_TOKEN should receive only required permissions.", "error", "high"), writeAllPermissions),
+  rule(meta("permissions-implicit", "Workflow permissions are implicit", "Explicit least-privilege permissions make token access reviewable.", "info", "high"), implicitPermissions),
+  rule(meta("unsafe-pull-request-target", "Privileged pull_request_target trigger", "This trigger runs in the base repository security context.", "warning", "high"), pullRequestTarget),
+  rule(meta("unsafe-workflow-run", "Privileged workflow_run trigger", "Artifacts and metadata from an earlier workflow may cross a trust boundary.", "warning", "high"), workflowRun),
+  rule(meta("secrets-in-privileged-workflow", "Secret used in privileged workflow", "Secrets combined with privileged triggers require a strict trust boundary.", "error", "high"), privilegedSecrets),
+  rule(meta("expression-injection", "Untrusted expression interpolated into shell", "GitHub event values should not be expanded directly into run scripts.", "error", "high", ["injection"]), expressionInjection),
+  rule(meta("self-hosted-untrusted", "Self-hosted runner handles untrusted change", "Untrusted pull requests can persist on or pivot from self-hosted runners.", "error", "high"), selfHostedUntrusted),
+  rule(meta("checkout-persists-credentials", "Checkout credentials remain available", "Persisted repository credentials increase impact if a later step is compromised.", "warning", "medium"), checkoutCredentials),
+  rule(meta("privileged-oidc", "OIDC token enabled in privileged workflow", "OIDC write access should be scoped to a trusted deployment job.", "warning", "medium"), privilegedOidc),
+  rule(meta("untrusted-checkout-ref", "Privileged workflow checks out an untrusted ref", "A privileged workflow must not execute code selected by pull-request input.", "error", "high"), untrustedCheckoutRef),
+  rule(meta("issue-comment-command", "Issue comment controls a privileged command", "Comment-driven automation needs authorization before executing commands.", "warning", "medium"), issueCommentCommand),
+  rule(meta("cache-key-untrusted", "Privileged cache key uses pull-request data", "Untrusted cache keys can allow cache poisoning across trust boundaries.", "warning", "medium"), untrustedCacheKey),
+  rule(meta("workflow-artifact-trust", "Privileged workflow consumes prior artifacts", "Downloaded artifacts must be bound to a trusted producer and validated before use.", "warning", "medium"), workflowArtifactTrust)
+];
+function rule(metaValue, run) {
+  return {
+    meta: metaValue,
+    run: (context) => context.workflows.flatMap((document) => run(document, metaValue))
+  };
+}
+function meta(id, title, description, severity, confidence, tags = []) {
+  return { id, title, description, category: "workflow-security", defaultSeverity: severity, confidence, helpUri: `${HELP_ROOT}#${id}`, tags };
+}
+function invalidYaml(document, metaValue) {
+  return document.errors.map((error) => makeFinding(metaValue, document, void 0, error.message, "Fix the YAML syntax before relying on this workflow.", error.message, error.location));
+}
+function unpinnedActions(document, metaValue) {
+  return document.findByKey("uses").flatMap((entry) => {
+    if (typeof entry.value !== "string" || entry.value.startsWith("./") || entry.value.startsWith("docker://") || !entry.value.includes("@")) return [];
+    const revision = entry.value.slice(entry.value.lastIndexOf("@") + 1);
+    return SHA_PIN.test(revision) ? [] : [makeFinding(metaValue, document, entry, `Action '${entry.value}' uses a mutable tag or branch.`, "Pin the action to a full commit SHA and retain the release name in a comment.", entry.value)];
+  });
+}
+function unpinnedDockerActions(document, metaValue) {
+  return document.findByKey("uses").flatMap((entry) => {
+    if (typeof entry.value !== "string" || !entry.value.startsWith("docker://")) return [];
+    return entry.value.includes("@sha256:") ? [] : [makeFinding(metaValue, document, entry, `Docker action '${entry.value}' is not pinned by digest.`, "Use an immutable sha256 image digest.", entry.value)];
+  });
+}
+function writeAllPermissions(document, metaValue) {
+  return document.findByKey("permissions").filter((entry) => entry.value === "write-all").map((entry) => makeFinding(metaValue, document, entry, "Workflow grants write-all permissions to GITHUB_TOKEN.", "Declare only the permissions required by each job.", entry.pointer));
+}
+function implicitPermissions(document, metaValue) {
+  if (!document.data || document.findByPointer("/permissions")) return [];
+  return [makeFinding(metaValue, document, void 0, "Workflow does not explicitly restrict GITHUB_TOKEN permissions.", "Add a top-level permissions block using least privilege.", "top-level")];
+}
+function pullRequestTarget(document, metaValue) {
+  if (!hasTrigger(document, "pull_request_target")) return [];
+  return [makeFinding(metaValue, document, triggerEntry(document, "pull_request_target"), "pull_request_target runs with the base repository context.", "Prefer pull_request, or ensure no untrusted code or artifact is executed.", "pull_request_target")];
+}
+function workflowRun(document, metaValue) {
+  if (!hasTrigger(document, "workflow_run")) return [];
+  return [makeFinding(metaValue, document, triggerEntry(document, "workflow_run"), "workflow_run may cross a workflow trust boundary.", "Validate artifact origin and contents, and restrict token permissions.", "workflow_run")];
+}
+function privilegedSecrets(document, metaValue) {
+  if (!hasPrivilegedTrigger(document)) return [];
+  return entriesContaining(document, /\bsecrets\.[A-Za-z0-9_]+/).map((entry) => makeFinding(metaValue, document, entry, "A repository secret is referenced in a privileged workflow.", "Separate secret-bearing work from untrusted inputs and validate the trust boundary.", String(entry.value)));
+}
+function expressionInjection(document, metaValue) {
+  const untrusted = /\$\{\{\s*(?:github\.event\.(?:issue|pull_request|comment|review|head_commit)|github\.head_ref|inputs\.)/;
+  return document.findByKey("run").filter((entry) => typeof entry.value === "string" && untrusted.test(entry.value)).map((entry) => makeFinding(metaValue, document, entry, "A potentially untrusted expression is interpolated directly into a run script.", "Pass the value through an environment variable and quote it in the target shell.", String(entry.value)));
+}
+function selfHostedUntrusted(document, metaValue) {
+  if (!hasTrigger(document, "pull_request") && !hasTrigger(document, "pull_request_target")) return [];
+  return document.findByKey("runs-on").filter((entry) => entry.value === "self-hosted" || Array.isArray(entry.value) && entry.value.includes("self-hosted")).map((entry) => makeFinding(metaValue, document, entry, "A self-hosted runner is reachable from a pull-request workflow.", "Use an isolated ephemeral runner or restrict execution to trusted branches and actors.", entry.pointer));
+}
+function checkoutCredentials(document, metaValue) {
+  if (!hasTrigger(document, "pull_request_target") && !hasTrigger(document, "workflow_run")) return [];
+  return document.findByKey("uses").filter((entry) => typeof entry.value === "string" && entry.value.startsWith("actions/checkout@")).flatMap((entry) => {
+    const stepPointer = entry.pointer.replace(/\/uses$/, "");
+    const setting = document.findByPointer(`${stepPointer}/with/persist-credentials`);
+    return setting?.value === false ? [] : [makeFinding(metaValue, document, setting ?? entry, "Checkout credentials remain available to later steps in a privileged workflow.", "Set with.persist-credentials to false unless later authenticated git operations are required.", stepPointer)];
+  });
+}
+function privilegedOidc(document, metaValue) {
+  if (!hasPrivilegedTrigger(document)) return [];
+  return document.findByKey("id-token").filter((entry) => entry.value === "write").map((entry) => makeFinding(metaValue, document, entry, "OIDC token minting is enabled in a privileged workflow.", "Move id-token: write to the smallest trusted deployment job and protect its environment.", entry.pointer));
+}
+function untrustedCheckoutRef(document, metaValue) {
+  if (!hasPrivilegedTrigger(document)) return [];
+  return document.findByKey("ref").filter((entry) => typeof entry.value === "string" && /github\.event\.pull_request\.(?:head\.)?sha|github\.head_ref/.test(entry.value) && /\/steps\/\d+\/with\/ref$/.test(entry.pointer)).map((entry) => makeFinding(metaValue, document, entry, "A privileged workflow checks out a pull-request-controlled ref.", "Do not execute pull-request code in a privileged workflow; split analysis and privileged follow-up jobs.", String(entry.value)));
+}
+function issueCommentCommand(document, metaValue) {
+  if (!hasTrigger(document, "issue_comment")) return [];
+  return document.findByKey("run").filter((entry) => typeof entry.value === "string" && /github\.event\.comment\.body/.test(entry.value)).map((entry) => makeFinding(metaValue, document, entry, "An issue comment is interpolated into a command.", "Authorize the actor and parse an allowlisted command without direct shell interpolation.", String(entry.value)));
+}
+function untrustedCacheKey(document, metaValue) {
+  if (!hasPrivilegedTrigger(document)) return [];
+  return document.findByKey("key").filter((entry) => /\/steps\/\d+\/with\/key$/.test(entry.pointer) && typeof entry.value === "string" && /github\.event\.pull_request|github\.head_ref/.test(entry.value)).map((entry) => makeFinding(metaValue, document, entry, "A privileged workflow cache key contains pull-request-controlled data.", "Use trusted immutable inputs for cache keys and prevent untrusted workflows from writing privileged caches.", String(entry.value)));
+}
+function workflowArtifactTrust(document, metaValue) {
+  if (!hasTrigger(document, "workflow_run")) return [];
+  return document.findByKey("uses").filter((entry) => typeof entry.value === "string" && entry.value.startsWith("actions/download-artifact@")).map((entry) => makeFinding(metaValue, document, entry, "A workflow_run workflow downloads an artifact from an earlier run.", "Bind the artifact to an expected workflow and commit, then validate contents before execution.", entry.pointer));
+}
+function makeFinding(metaValue, document, entry, message, remediation, evidence, location = entry?.location) {
+  const path = location?.path ?? document.path;
+  const fingerprint = (0, import_node_crypto.createHash)("sha256").update([metaValue.id, path, evidence].join("\0")).digest("hex");
+  return { ruleId: metaValue.id, source: "openmaintainer", category: metaValue.category, severity: metaValue.defaultSeverity, confidence: metaValue.confidence, title: metaValue.title, message, remediation, helpUri: metaValue.helpUri, location: location ?? { path }, fingerprint };
+}
+function hasPrivilegedTrigger(document) {
+  return hasTrigger(document, "pull_request_target") || hasTrigger(document, "workflow_run") || hasTrigger(document, "issue_comment");
+}
+function hasTrigger(document, name) {
+  const on = document.data?.on;
+  return on === name || Array.isArray(on) && on.includes(name) || isRecord3(on) && Object.hasOwn(on, name);
+}
+function triggerEntry(document, name) {
+  return document.findByPointer(`/on/${name}`) ?? document.findByPointer("/on");
+}
+function entriesContaining(document, pattern) {
+  return document.entries.filter((entry) => typeof entry.value === "string" && pattern.test(entry.value));
+}
+function isRecord3(value) {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+// src/rules/repository-health.ts
+var import_node_crypto2 = require("node:crypto");
+var import_promises3 = require("node:fs/promises");
+var import_node_path3 = require("node:path");
+var HELP_ROOT2 = "https://github.com/Kaneki599/openmaintainer/blob/main/docs/rules.md";
+var repositoryRules = [
+  anyFileRule("repository-readme-missing", "README is missing", "A repository landing page helps users understand and evaluate the project.", ["README.md", "README.rst", "README.txt", "README"], "warning", "repository", "Add a README with the problem, installation, a minimal example, and support expectations."),
+  anyFileRule("repository-license-missing", "License is missing", "Without a license, users do not have clear permission to use or contribute to the project.", ["LICENSE", "LICENSE.md", "LICENSE.txt", "COPYING"], "warning", "repository", "Add an OSI-approved license and identify it in package metadata."),
+  anyFileRule("security-policy-missing", "Security policy is missing", "A disclosure policy gives reporters a safe route for vulnerabilities.", ["SECURITY.md", ".github/SECURITY.md"], "warning", "repository", "Add SECURITY.md with supported versions and a private reporting channel."),
+  anyFileRule("contributing-guide-missing", "Contribution guide is missing", "Contributors need a predictable development and review path.", ["CONTRIBUTING.md", ".github/CONTRIBUTING.md"], "info", "maintenance", "Add setup, test, pull-request, and review instructions."),
+  anyFileRule("codeowners-missing", "CODEOWNERS is missing", "Explicit ownership makes review routing and stewardship clearer.", ["CODEOWNERS", ".github/CODEOWNERS", "docs/CODEOWNERS"], "info", "maintenance", "Add a CODEOWNERS file for critical paths."),
+  anyFileRule("pull-request-template-missing", "Pull request template is missing", "A lightweight template improves the consistency of proposed changes.", [".github/pull_request_template.md", ".github/PULL_REQUEST_TEMPLATE.md", ".github/PULL_REQUEST_TEMPLATE"], "info", "maintenance", "Add a pull request template covering rationale, tests, and compatibility."),
+  anyFileRule("issue-templates-missing", "Issue templates are missing", "Structured issue intake reduces triage time.", [".github/ISSUE_TEMPLATE/config.yml", ".github/ISSUE_TEMPLATE/bug_report.yml", ".github/ISSUE_TEMPLATE/feature_request.yml"], "info", "maintenance", "Add issue forms for bugs and feature requests."),
+  anyFileRule("dependency-updates-missing", "Automated dependency updates are not configured", "Regular dependency updates reduce exposure to stale or vulnerable packages.", [".github/dependabot.yml", ".renovaterc", ".renovaterc.json", "renovate.json"], "info", "supply-chain", "Configure Dependabot or Renovate with a reviewable update cadence."),
+  fileRule("changelog-missing", "Changelog is missing", "Users need a concise record of notable changes and upgrade considerations.", "CHANGELOG.md", "info", "release", "Add a changelog and update it for user-visible releases."),
+  fileRule("support-policy-missing", "Support policy is missing", "A support policy sets expectations about questions and maintenance.", "SUPPORT.md", "info", "maintenance", "Add SUPPORT.md describing supported channels and response expectations."),
+  packageMetadataRule(),
+  packageLockRule()
+];
+function fileRule(id, title, description, path, severity, category, remediation) {
+  return anyFileRule(id, title, description, [path], severity, category, remediation);
+}
+function anyFileRule(id, title, description, paths, severity, category, remediation) {
+  const metadata = meta2(id, title, description, severity, category);
+  return {
+    meta: metadata,
+    async run({ root }) {
+      for (const path of paths) if (await exists((0, import_node_path3.join)(root, path))) return [];
+      return [finding(metadata, paths[0], `${paths.join("|")}:missing`, description, remediation)];
     }
+  };
+}
+function packageMetadataRule() {
+  const metadata = meta2("package-metadata-incomplete", "Package metadata is incomplete", "Published packages should expose repository, license, description, and issue tracker metadata.", "warning", "release");
+  return {
+    meta: metadata,
+    async run({ root }) {
+      const path = "package.json";
+      let data;
+      try {
+        data = JSON.parse(await (0, import_promises3.readFile)((0, import_node_path3.join)(root, path), "utf8"));
+      } catch (error) {
+        return isMissing(error) ? [] : [finding(metadata, path, "invalid-json", "package.json could not be parsed.", "Fix package.json syntax before publishing.")];
+      }
+      const missing = ["description", "license", "repository", "bugs"].filter((key) => data[key] === void 0 || data[key] === "");
+      return missing.length === 0 ? [] : [finding(metadata, path, missing.join(","), `package.json is missing: ${missing.join(", ")}.`, "Add discoverability and support metadata before publishing the package.")];
+    }
+  };
+}
+function packageLockRule() {
+  const metadata = meta2("package-lock-missing", "JavaScript lockfile is missing", "Applications and CI jobs benefit from reproducible dependency resolution.", "warning", "supply-chain");
+  return {
+    meta: metadata,
+    async run({ root }) {
+      if (!await exists((0, import_node_path3.join)(root, "package.json"))) return [];
+      for (const path of ["package-lock.json", "npm-shrinkwrap.json", "pnpm-lock.yaml", "yarn.lock", "bun.lock", "bun.lockb"]) if (await exists((0, import_node_path3.join)(root, path))) return [];
+      return [finding(metadata, "package.json", "lockfile:missing", metadata.description, "Commit the lockfile produced by the package manager used in CI.")];
+    }
+  };
+}
+function meta2(id, title, description, severity, category) {
+  return { id, title, description, category, defaultSeverity: severity, confidence: "high", helpUri: `${HELP_ROOT2}#${id}`, tags: [category, "repository-health"] };
+}
+function finding(metadata, path, evidence, message, remediation) {
+  return {
+    ruleId: metadata.id,
+    source: "openmaintainer",
+    category: metadata.category,
+    severity: metadata.defaultSeverity,
+    confidence: metadata.confidence,
+    title: metadata.title,
+    message,
+    remediation,
+    helpUri: metadata.helpUri,
+    location: { path },
+    fingerprint: (0, import_node_crypto2.createHash)("sha256").update([metadata.id, path, evidence].join("\0")).digest("hex")
+  };
+}
+async function exists(path) {
+  try {
+    await (0, import_promises3.stat)(path);
+    return true;
   } catch (error) {
-    if (isMissingDirectory(error)) {
-    } else {
-      throw error;
+    if (isMissing(error)) return false;
+    throw error;
+  }
+}
+function isMissing(error) {
+  return typeof error === "object" && error !== null && error.code === "ENOENT";
+}
+
+// src/rules/registry.ts
+var builtInRules = [...workflowRules, ...repositoryRules];
+async function runRules(context, rules = builtInRules) {
+  const findings = [];
+  const executedRules = [];
+  const skippedRules = [];
+  for (const candidate of rules) {
+    if (!isRuleEnabled(candidate.meta.id, context.config, candidate.meta.category)) {
+      skippedRules.push({ ruleId: candidate.meta.id, reason: "disabled by configuration" });
+      continue;
+    }
+    executedRules.push(candidate.meta.id);
+    for (const finding2 of await candidate.run(context)) {
+      if (isSuppressed(candidate.meta.id, finding2.location?.path, context.config)) continue;
+      findings.push({ ...finding2, severity: severityFor(candidate.meta.id, finding2.severity, context.config) });
     }
   }
-  return { schemaVersion: 1, scannedAt: (/* @__PURE__ */ new Date()).toISOString(), root, findings };
+  return { findings, executedRules, skippedRules };
+}
+
+// src/version.ts
+var OPENMAINTAINER_VERSION = "0.2.0";
+
+// src/scanner.ts
+var import_node_child_process = require("node:child_process");
+var import_node_util = require("node:util");
+var WORKFLOW_DIRECTORY = ".github/workflows";
+async function scanRepository(root, options = {}) {
+  const startedAt = performance.now();
+  const loadedConfig = await loadConfig(root, options.configPath, options.policyPath);
+  const config = { ...loadedConfig, preset: options.preset ?? loadedConfig.preset, failOn: options.failOn ?? loadedConfig.failOn };
+  const workflows = await loadWorkflows(root);
+  const result = await runRules({ root, workflows, config });
+  const changedPaths = options.changedSince ? await listChangedPaths(root, options.changedSince) : null;
+  const scopedFindings = changedPaths ? result.findings.filter((finding2) => finding2.location?.path && changedPaths.has(finding2.location.path.replaceAll("\\", "/"))) : result.findings;
+  const baseline = options.baseline === false ? null : await loadBaseline(root, config.baseline.file);
+  const comparison = compareBaseline(scopedFindings, baseline);
+  const summary = {
+    errors: comparison.findings.filter((finding2) => finding2.severity === "error").length,
+    warnings: comparison.findings.filter((finding2) => finding2.severity === "warning").length,
+    info: comparison.findings.filter((finding2) => finding2.severity === "info").length,
+    newFindings: comparison.findings.filter((finding2) => finding2.status === "new").length,
+    existingFindings: comparison.findings.filter((finding2) => finding2.status === "existing").length,
+    resolvedFindings: comparison.resolved.length
+  };
+  return {
+    schemaVersion: 2,
+    tool: { name: "openmaintainer", version: OPENMAINTAINER_VERSION },
+    scannedAt: (/* @__PURE__ */ new Date()).toISOString(),
+    root,
+    durationMs: Math.round((performance.now() - startedAt) * 100) / 100,
+    policy: { preset: config.preset, failOn: config.failOn, baselineMode: config.baseline.mode, changedSince: options.changedSince },
+    coverage: { executedRules: result.executedRules, skippedRules: result.skippedRules },
+    summary,
+    findings: comparison.findings,
+    resolved: comparison.resolved
+  };
+}
+var execFileAsync = (0, import_node_util.promisify)(import_node_child_process.execFile);
+async function listChangedPaths(root, reference) {
+  try {
+    const { stdout } = await execFileAsync("git", ["diff", "--name-only", "--diff-filter=ACMRT", `${reference}...HEAD`, "--"], { cwd: root, maxBuffer: 10 * 1024 * 1024 });
+    return new Set(stdout.split(/\r?\n/).filter(Boolean).map((path) => path.replaceAll("\\", "/")));
+  } catch (error) {
+    const detail = typeof error === "object" && error !== null && "stderr" in error ? String(error.stderr).trim() : "";
+    throw new Error(`Could not determine files changed since ${reference}.${detail ? ` ${detail}` : ""}`);
+  }
+}
+async function loadWorkflows(root) {
+  const workflowRoot = (0, import_node_path4.join)(root, WORKFLOW_DIRECTORY);
+  try {
+    const entries = await (0, import_promises4.readdir)(workflowRoot, { withFileTypes: true });
+    const workflowFiles = entries.filter((entry) => entry.isFile() && /\.ya?ml$/i.test(entry.name)).sort((left, right) => left.name.localeCompare(right.name));
+    return Promise.all(workflowFiles.map(async (entry) => {
+      const filename = (0, import_node_path4.join)(workflowRoot, entry.name);
+      return parseWorkflow((0, import_node_path4.relative)(root, filename), await (0, import_promises4.readFile)(filename, "utf8"));
+    }));
+  } catch (error) {
+    if (isMissingDirectory(error)) return [];
+    throw error;
+  }
 }
 function isMissingDirectory(error) {
   return typeof error === "object" && error !== null && error.code === "ENOENT";
 }
 
 // src/action.ts
-function input(name, fallback) {
+var extension = { terminal: "txt", markdown: "md", json: "json", sarif: "sarif", html: "html" };
+function input(name, fallback = "") {
   return process.env[`INPUT_${name.replaceAll("-", "_").toUpperCase()}`]?.trim() || fallback;
 }
 async function setOutput(name, value) {
   const outputFile = process.env.GITHUB_OUTPUT;
-  if (outputFile) await (0, import_promises3.appendFile)(outputFile, `${name}=${value}
+  if (outputFile) await (0, import_promises5.appendFile)(outputFile, `${name}=${value}
 `, "utf8");
 }
 async function main() {
-  const root = (0, import_node_path3.resolve)(input("target", "."));
-  const format = input("format", "markdown");
-  const output = input("output", "openmaintainer-report.md");
-  const failOnError = input("fail-on-error", "true") !== "false";
-  const report = await scanRepository(root);
-  const body = format === "json" ? `${JSON.stringify(report, null, 2)}
-` : formatMarkdown(report);
-  await (0, import_promises3.writeFile)(output, body, "utf8");
-  await setOutput("report-path", output);
-  await setOutput("error-count", String(report.findings.filter((finding2) => finding2.severity === "error").length));
-  process.stdout.write(`OpenMaintainer wrote ${output} with ${report.findings.length} finding(s).
+  const root = (0, import_node_path5.resolve)(input("target", "."));
+  const formats = parseFormats(input("formats") || input("format", "markdown"));
+  const legacyOutput = input("output", "openmaintainer-report.md");
+  const reportDirectory = (0, import_node_path5.resolve)(input("report-directory", ".openmaintainer/reports"));
+  const configValue = input("config");
+  const policyValue = input("policy");
+  const changedSince = input("changed-since");
+  const presetValue = input("preset");
+  const configPath = configValue ? (0, import_node_path5.resolve)(root, configValue) : void 0;
+  const policyPath = policyValue ? (0, import_node_path5.resolve)(root, policyValue) : void 0;
+  const actionConfig = await loadConfig(root, configPath, policyPath);
+  const failOnInput = input("fail-on");
+  const legacyFailureInput = input("fail-on-error");
+  const failOn = failOnValue(failOnInput || (legacyFailureInput ? legacyFailureInput === "false" ? "never" : "error" : actionConfig.failOn));
+  const report = await scanRepository(root, {
+    configPath,
+    policyPath,
+    preset: presetValue ? preset(presetValue) : void 0,
+    failOn,
+    changedSince: changedSince || void 0
+  });
+  const paths = /* @__PURE__ */ new Map();
+  for (const format of formats) {
+    const filename = formats.length === 1 ? (0, import_node_path5.resolve)(legacyOutput) : (0, import_node_path5.join)(reportDirectory, `openmaintainer-report.${extension[format]}`);
+    await (0, import_promises5.mkdir)((0, import_node_path5.dirname)(filename), { recursive: true });
+    await (0, import_promises5.writeFile)(filename, formatReport(report, format), "utf8");
+    paths.set(format, filename);
+  }
+  if (booleanInput("annotations", actionConfig.github.annotations)) emitAnnotations(report.findings);
+  if (booleanInput("summary", actionConfig.github.summary) && process.env.GITHUB_STEP_SUMMARY) {
+    await (0, import_promises5.appendFile)(process.env.GITHUB_STEP_SUMMARY, formatMarkdown(report), "utf8");
+  }
+  if (booleanInput("pull-request-comment", actionConfig.github.pullRequestComment)) {
+    await publishPullRequestComment(report, input("github-token"));
+  }
+  await setOutput("report-path", paths.values().next().value ?? "");
+  await setOutput("markdown-path", paths.get("markdown") ?? "");
+  await setOutput("json-path", paths.get("json") ?? "");
+  await setOutput("sarif-path", paths.get("sarif") ?? "");
+  await setOutput("html-path", paths.get("html") ?? "");
+  await setOutput("error-count", String(report.summary.errors));
+  await setOutput("warning-count", String(report.summary.warnings));
+  await setOutput("new-count", String(report.summary.newFindings));
+  await setOutput("resolved-count", String(report.summary.resolvedFindings));
+  await setOutput("status", shouldFail(report, failOn) ? "failed" : "passed");
+  process.stdout.write(`OpenMaintainer scanned ${report.root} with ${report.findings.length} finding(s).
 `);
-  if (failOnError && report.findings.some((finding2) => finding2.severity === "error")) process.exitCode = 1;
+  if (shouldFail(report, failOn)) process.exitCode = 1;
+}
+async function publishPullRequestComment(report, token) {
+  const eventPath = process.env.GITHUB_EVENT_PATH;
+  const repository = process.env.GITHUB_REPOSITORY;
+  if (!token) throw new Error("github-token is required when pull-request-comment is enabled.");
+  if (!eventPath || !repository) throw new Error("Pull request comments require the GitHub Actions event context.");
+  const event = JSON.parse(await (0, import_promises5.readFile)(eventPath, "utf8"));
+  const issueNumber = event.pull_request?.number;
+  if (!issueNumber) {
+    process.stdout.write("::notice title=OpenMaintainer::No pull request is associated with this event; comment skipped.\n");
+    return;
+  }
+  const marker = "<!-- openmaintainer-report -->";
+  const body = `${marker}
+${formatMarkdown(report)}`.slice(0, 65e3);
+  const base = `${process.env.GITHUB_API_URL ?? "https://api.github.com"}/repos/${repository}/issues/${issueNumber}/comments`;
+  const headers = { Accept: "application/vnd.github+json", Authorization: `Bearer ${token}`, "X-GitHub-Api-Version": "2022-11-28", "Content-Type": "application/json" };
+  const commentsResponse = await fetch(`${base}?per_page=100`, { headers });
+  if (!commentsResponse.ok) throw new Error(`Could not list pull request comments: GitHub returned ${commentsResponse.status}.`);
+  const comments = await commentsResponse.json();
+  const existing = comments.find((comment) => comment.user?.type === "Bot" && comment.body?.includes(marker));
+  const response = await fetch(existing ? `${process.env.GITHUB_API_URL ?? "https://api.github.com"}/repos/${repository}/issues/comments/${existing.id}` : base, {
+    method: existing ? "PATCH" : "POST",
+    headers,
+    body: JSON.stringify({ body })
+  });
+  if (!response.ok) throw new Error(`Could not publish pull request comment: GitHub returned ${response.status}.`);
+}
+function emitAnnotations(findings) {
+  const maximum = 50;
+  for (const finding2 of findings.slice(0, maximum)) {
+    const command = finding2.severity === "info" ? "notice" : finding2.severity;
+    const properties = [
+      finding2.location?.path ? `file=${escapeProperty(finding2.location.path)}` : "",
+      finding2.location?.startLine ? `line=${finding2.location.startLine}` : "",
+      finding2.location?.startColumn ? `col=${finding2.location.startColumn}` : "",
+      `title=${escapeProperty(`OpenMaintainer: ${finding2.ruleId}`)}`
+    ].filter(Boolean).join(",");
+    process.stdout.write(`::${command} ${properties}::${escapeMessage(`${finding2.message} ${finding2.remediation}`)}
+`);
+  }
+  if (findings.length > maximum) process.stdout.write(`::notice title=OpenMaintainer::${findings.length - maximum} additional findings are available in the generated report.
+`);
+}
+function shouldFail(report, threshold) {
+  if (threshold === "never") return false;
+  const rank = { error: 0, warning: 1, info: 2 };
+  return report.findings.some((finding2) => (report.policy.baselineMode !== "new" || finding2.status === "new") && rank[finding2.severity] <= rank[threshold]);
+}
+function parseFormats(value) {
+  const formats = [...new Set(value.split(",").map((item) => item.trim()).filter(Boolean))];
+  for (const format of formats) if (!["terminal", "markdown", "json", "sarif", "html"].includes(format)) throw new Error(`Unsupported report format: ${format}`);
+  return formats;
+}
+function failOnValue(value) {
+  if (!["error", "warning", "info", "never"].includes(value)) throw new Error(`Unsupported fail-on value: ${value}`);
+  return value;
+}
+function preset(value) {
+  if (!["starter", "maintainer", "security", "strict"].includes(value)) throw new Error(`Unsupported preset: ${value}`);
+  return value;
+}
+function booleanInput(name, fallback) {
+  const value = input(name);
+  if (!value) return fallback;
+  if (value !== "true" && value !== "false") throw new Error(`${name} must be true or false.`);
+  return value === "true";
+}
+function escapeMessage(value) {
+  return value.replaceAll("%", "%25").replaceAll("\r", "%0D").replaceAll("\n", "%0A");
+}
+function escapeProperty(value) {
+  return escapeMessage(value).replaceAll(":", "%3A").replaceAll(",", "%2C");
 }
 main().catch((error) => {
   process.stderr.write(`${error instanceof Error ? error.stack ?? error.message : String(error)}

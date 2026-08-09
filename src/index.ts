@@ -1,5 +1,12 @@
 export * from "./types.js";
 export { scanRepository } from "./scanner.js";
 export { checkWorkflowSecurity } from "./rules/workflow-security.js";
-export { formatMarkdown } from "./reporters.js";
-export { loadConfig } from "./config.js";
+export { formatReport, formatTerminal, formatMarkdown, formatSarif, formatHtml } from "./reporters.js";
+export { loadConfig, resolveConfig } from "./config.js";
+export { loadBaseline, saveBaseline, compareBaseline } from "./baseline.js";
+export { builtInRules, runRules } from "./rules/registry.js";
+export { parseWorkflow } from "./workflow-model.js";
+export { aggregateReports, importReport } from "./importers.js";
+export { analyzeGitHubOwner, formatGitHubPortfolioHtml } from "./github-portfolio.js";
+export type { GitHubPortfolioOptions, GitHubPortfolioReport, GitHubRepositoryResult } from "./github-portfolio.js";
+export { OPENMAINTAINER_VERSION } from "./version.js";

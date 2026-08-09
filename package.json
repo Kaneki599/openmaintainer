@@ -1,18 +1,33 @@
 {
   "name": "openmaintainer",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "private": false,
   "description": "Explainable maintainer health checks for GitHub repositories.",
   "type": "module",
   "bin": {
     "openmaintainer": "./dist/cli.js"
   },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "bundle:action": "esbuild src/action.ts --bundle --platform=node --target=node20 --format=cjs --outfile=dist/action.cjs",
     "check": "tsc --noEmit -p tsconfig.json",
     "test": "node --test --import tsx test/*.test.ts",
-    "scan": "tsx src/cli.ts scan"
+    "scan": "tsx src/cli.ts scan",
+    "prepack": "npm run build && npm run bundle:action && npm run check && npm test"
   },
   "engines": {
     "node": ">=20"
@@ -25,6 +40,14 @@
     "open-source"
   ],
   "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kaneki599/openmaintainer.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Kaneki599/openmaintainer/issues"
+  },
+  "homepage": "https://github.com/Kaneki599/openmaintainer#readme",
   "devDependencies": {
     "@types/node": "^22.0.0",
     "esbuild": "^0.28.2",
